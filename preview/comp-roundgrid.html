@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+  .tile { padding:14px 6px; border-radius:10px; border:1px solid #d1d5db; background:#fff; text-align:center; min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; position:relative; }
+  .tile.active { border:2px solid #245233; background:#24523318; }
+  .tile.done { border:1.5px solid #52aa70; background:#f2faf5; }
+  .tile.done::after { content:'✓'; position:absolute; top:6px; right:8px; font-size:11px; font-weight:800; color:#3d8c58; font-family:var(--mono); }
+  .ic { font-size:28px; line-height:1; }
+  .lbl { font-size:13px; font-weight:700; line-height:1.2; color:#374151; }
+  .tile.active .lbl, .tile.done .lbl { color:#245233; }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">เลือกรอบ QC — 6 tiles · time-of-day emoji + label · idle / active / done</div>
+  <div class="grid">
+    <div class="tile done"><span class="ic">🌅</span><span class="lbl">รอบ1 เช้า</span></div>
+    <div class="tile active"><span class="ic">🌤️</span><span class="lbl">รอบ2 เช้า</span></div>
+    <div class="tile"><span class="ic">☀️</span><span class="lbl">รอบ3 เช้า</span></div>
+    <div class="tile"><span class="ic">🌞</span><span class="lbl">รอบ1 บ่าย</span></div>
+    <div class="tile"><span class="ic">🌇</span><span class="lbl">รอบ2 บ่าย</span></div>
+    <div class="tile"><span class="ic">🌆</span><span class="lbl">รอบ3 เย็น</span></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .scale { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; }
+  .sw { aspect-ratio:1.6; border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; padding:8px; font-family:var(--mono); font-size:10px; font-weight:600; border:1px solid rgba(0,0,0,.06); }
+  .sw .name { font-weight:700; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--gr5); }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">Neutral gray scale</div>
+  <div class="scale">
+    <div class="sw" style="background:#ffffff;color:#111827"><span class="name">w</span><span>#ffffff</span></div>
+    <div class="sw" style="background:#f9fafb;color:#111827"><span class="name">gr0</span><span>#f9fafb</span></div>
+    <div class="sw" style="background:#f3f4f6;color:#111827"><span class="name">gr1</span><span>#f3f4f6</span></div>
+    <div class="sw" style="background:#d1d5db;color:#111827"><span class="name">gr3</span><span>#d1d5db</span></div>
+    <div class="sw" style="background:#6b7280;color:#fff"><span class="name">gr5</span><span>#6b7280</span></div>
+    <div class="sw" style="background:#374151;color:#fff"><span class="name">gr7</span><span>#374151</span></div>
+  </div>
+  <div class="legend">
+    <span><b>gr0</b> page bg</span>
+    <span><b>gr1</b> dividers</span>
+    <span><b>gr3</b> borders 1.5px</span>
+    <span><b>gr5</b> labels · placeholder</span>
+    <span><b>gr7</b> chip text</span>
+    <span><b>gr9</b> #111827 body text</span>
+  </div>
+</div>
+</body></html>

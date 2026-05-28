@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .btn { font-family:var(--font); font-size:18px; font-weight:700; border-radius:10px; border:none; min-height:52px; padding:0 22px; cursor:pointer; }
+  .btn-primary { background:#2e6b42; color:#fff; }
+  .btn-dark { background:#0d2b1a; color:#fff; }
+  .btn-outline { background:#fff; color:#245233; border:2px solid #52aa70; }
+  .btn-add { padding:0 26px; border:2px dashed #52aa70; background:transparent; color:#2e6b42; font-weight:700; font-size:16px; border-radius:10px; min-height:48px; }
+  .btn-sm { font-size:13px; font-weight:700; padding:0 14px; border-radius:100px; border:1px solid #52aa70; background:#fff; color:#245233; min-height:36px; }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">Buttons — text-first, no decorative icons</div>
+  <div class="row">
+    <button class="btn btn-primary">บันทึกลง Supabase</button>
+    <button class="btn btn-dark">Copy → LINE</button>
+  </div>
+  <div class="row">
+    <button class="btn btn-outline">Copy สรุปรอบนี้</button>
+    <button class="btn-add">＋ เพิ่ม LOT</button>
+    <button class="btn-sm">+ Maintenance</button>
+  </div>
+</div>
+</body></html>

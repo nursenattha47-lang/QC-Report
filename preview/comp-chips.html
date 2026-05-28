@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .row { display:flex; gap:7px; flex-wrap:wrap; }
+  .chip { padding:9px 16px; border:1.5px solid #d1d5db; border-radius:100px; font-family:var(--font); font-size:16px; font-weight:700; color:#374151; background:#fff; min-height:44px; display:inline-flex; align-items:center; gap:6px; }
+  .chip.ok { background:#245233; border-color:#245233; color:#fff; }
+  .chip.ng { background:#c53030; border-color:#c53030; color:#fff; }
+  .chip.warn { background:#b45309; border-color:#b45309; color:#fff; }
+  .chip.gray { background:#374151; border-color:#374151; color:#fff; }
+  .chip.blue { background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
+  .glyph { font-family:var(--mono); font-weight:700; }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">Chips — single-tap state selectors · ✓/! glyphs only</div>
+  <div class="row">
+    <span class="chip">default</span>
+    <span class="chip ok"><span class="glyph">✓</span> ปกติ</span>
+    <span class="chip ng"><span class="glyph">!</span> ไม่ปกติ</span>
+    <span class="chip warn">สว่างเกิน</span>
+    <span class="chip blue">เข้มเกิน</span>
+    <span class="chip gray">ไม่ได้ใช้</span>
+  </div>
+</div>
+</body></html>

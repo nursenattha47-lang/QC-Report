@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .specimen { display:flex; align-items:center; gap:14px; padding:6px 0; border-bottom:1px solid var(--gr1); }
+  .specimen:last-child { border-bottom:0; }
+  .meta { font-size:10px; color:var(--gr5); margin-left:auto; white-space:nowrap; font-family:var(--font); font-weight:400; }
+  .big-num { font-family:var(--mono); font-size:40px; font-weight:800; color:var(--g3); background:var(--g8); padding:2px 18px; border-radius:10px; letter-spacing:-1px; }
+  .lot { font-family:var(--mono); font-size:16px; font-weight:700; color:var(--g8); letter-spacing:1px; }
+  .badge { font-family:var(--mono); font-size:13px; font-weight:500; background:var(--g2); color:var(--g8); border-radius:100px; padding:4px 11px; }
+  .score { width:42px;height:42px;border:1.5px solid var(--gr3);border-radius:6px;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--gr5);background:var(--w);display:inline-flex;align-items:center;justify-content:center; }
+  .score.on { background:var(--b6); color:var(--w); border-color:var(--b6); }
+</style></head><body>
+<div class="card-frame">
+  <div class="specimen">
+    <span class="big-num">42</span>
+    <span class="lot">B1-25-5-26-1</span>
+    <span class="badge">09:42 น.</span>
+    <span class="meta">IBM Plex Mono (โค้ด · เวลา · เลข)</span>
+  </div>
+  <div class="specimen">
+    <span class="score">1</span><span class="score">2</span><span class="score">3</span>
+    <span class="score on">4</span><span class="score">5</span><span class="score">6</span>
+    <span class="score">7</span><span class="score">8</span><span class="score">9</span><span class="score">10</span>
+    <span class="meta">score 14/700</span>
+  </div>
+</div>
+</body></html>

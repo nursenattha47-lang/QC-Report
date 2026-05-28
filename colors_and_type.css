@@ -1,0 +1,200 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Anjali QC — Colors & Type
+   Extracted from /source/qc_anjali_original.html
+
+   PRIMARY FONT: TH Sarabun (user-supplied .ttf in fonts/)
+   FALLBACK:     IBM Plex Sans Thai (Google Fonts, kept as backup)
+   MONO:         IBM Plex Mono (Google Fonts)
+═══════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@font-face {
+  font-family: 'TH Sarabun';
+  src: url('fonts/THSarabun.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TH Sarabun';
+  src: url('fonts/THSarabun_Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* TH Sarabun only ships Regular + Bold — map all sub-bold weights to 400, all 500+ to 700 */
+@font-face {
+  font-family: 'TH Sarabun';
+  src: url('fonts/THSarabun.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TH Sarabun';
+  src: url('fonts/THSarabun_Bold.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TH Sarabun';
+  src: url('fonts/THSarabun_Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TH Sarabun';
+  src: url('fonts/THSarabun_Bold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+:root {
+  /* ── PRIMARY: GREEN SCALE (fruit / leaf / sap) ─────────────────── */
+  --g9: #0d2b1a;   /* darkest — topbar bg, button-dark */
+  --g8: #1a3a2a;   /* card title text, lot summary bg */
+  --g7: #245233;   /* primary OK chip, active tab text */
+  --g6: #2e6b42;   /* primary button bg */
+  --g5: #3d8c58;   /* tab underline, focus ring source */
+  --g4: #52aa70;   /* status dot, outline button border */
+  --g3: #7ecf97;   /* topbar metadata text, "done" check */
+  --g2: #b5e8c5;   /* time badge bg-on-light */
+  --g1: #e1f5e9;   /* OK alert bg, history badge bg */
+  --g0: #f2faf5;   /* extra-light backgrounds, hover states */
+
+  /* ── SEMANTIC ACCENTS ──────────────────────────────────────────── */
+  --r5: #c53030;   /* danger / NG / warn-state actions */
+  --r1: #fee2e2;   /* danger alert bg */
+  --a5: #b45309;   /* amber — "saving" / extra section */
+  --a1: #fef3c7;   /* amber alert bg, extra-head bg */
+  --b6: #1d4ed8;   /* info blue — score selection, pack */
+  --b1: #dbeafe;   /* info alert bg */
+
+  /* ── NEUTRAL GRAY SCALE ────────────────────────────────────────── */
+  --gr9: #111827;   /* body text */
+  --gr7: #374151;   /* secondary text, chip text */
+  --gr5: #6b7280;   /* tertiary text, labels, placeholder */
+  --gr3: #d1d5db;   /* default borders */
+  --gr1: #f3f4f6;   /* inner dividers, card-head bg */
+  --gr0: #f9fafb;   /* page bg, machine-card bg */
+  --w:   #ffffff;
+
+  /* ── ROUND ACCENTS (6 inspection rounds) ───────────────────────── */
+  --round-m1: #245233;  /* รอบ1 เช้า — morning 1 (green) */
+  --round-m2: #1565c0;  /* รอบ2 เช้า — morning 2 (blue) */
+  --round-m3: #b45309;  /* รอบ3 เช้า — morning 3 (amber) */
+  --round-a1: #6a1b9a;  /* รอบ1 บ่าย — afternoon 1 (purple) */
+  --round-a2: #7b3f00;  /* รอบ2 บ่าย — afternoon 2 (brown) */
+  --round-a3: #2e4a5a;  /* รอบ3 เย็น — evening (slate) */
+
+  /* ── RADII ─────────────────────────────────────────────────────── */
+  --rsm: 6px;
+  --rmd: 10px;
+  --rlg: 14px;
+  --rxl: 20px;
+  --rpill: 100px;
+
+  /* ── SHADOWS ───────────────────────────────────────────────────── */
+  --s1: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --s2: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+  --s3: 0 8px 24px rgba(0,0,0,.10);
+  --s-topbar: 0 2px 8px rgba(0,0,0,.25);
+  --s-focus:  0 0 0 3px rgba(61,140,88,.12);
+
+  /* ── SPACING (4-px base) ───────────────────────────────────────── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 14px;
+  --sp-5: 16px;
+  --sp-6: 20px;
+  --sp-7: 24px;
+  --sp-8: 32px;
+
+  /* ── TYPE FAMILIES ─────────────────────────────────────────────── */
+  --font:  'TH Sarabun', 'IBM Plex Sans Thai', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', 'JetBrains Mono', monospace;
+
+  /* ── SEMANTIC TYPE — sizes, weights, leading ──────────────────────
+     TH Sarabun reads ~2-3pt smaller than IBM Plex at the same px value,
+     so all sizes are bumped up vs the original.                     */
+  /* Display: app title in topbar */
+  --t-display-size:   20px;
+  --t-display-weight: 700;
+
+  /* H1: round-banner name */
+  --t-h1-size:   22px;
+  --t-h1-weight: 700;
+
+  /* H2: button labels, big numerics */
+  --t-h2-size:   18px;
+  --t-h2-weight: 700;
+
+  /* H3: card title, section title */
+  --t-h3-size:   16px;
+  --t-h3-weight: 700;
+
+  /* Body */
+  --t-body-size:   17px;
+  --t-body-weight: 400;
+  --t-body-leading: 1.4;
+
+  /* Chip / control label */
+  --t-control-size:   16px;
+  --t-control-weight: 700;
+
+  /* Small chip (secondary) */
+  --t-chip-sm-size:   14px;
+  --t-chip-sm-weight: 700;
+
+  /* Label — UPPERCASE, tracked */
+  --t-label-size:    15px;
+  --t-label-weight:  700;
+  --t-label-tracking: .5px;
+
+  /* Meta — timestamps, helpers */
+  --t-meta-size:   14px;
+  --t-meta-weight: 400;
+  --t-meta-color:  var(--gr5);
+
+  /* Tiny — topbar co name */
+  --t-tiny-size:    13px;
+  --t-tiny-weight:  500;
+  --t-tiny-tracking: .5px;
+
+  /* Mono — lot codes, scores, time badges (stays IBM Plex Mono) */
+  --t-mono-size:   14px;
+  --t-mono-weight: 600;
+
+  /* Numeric display — lot-summary big number */
+  --t-numeric-size:   40px;
+  --t-numeric-weight: 800;
+
+  /* ── TAP TARGETS ────────────────────────────────────────────────
+     Minimum 44px (chip / num-btn / lot-sel-btn). 48-52px for primary
+     CTAs. Never go below 36px even on secondary actions.            */
+  --tap-sm: 36px;
+  --tap-md: 44px;
+  --tap-lg: 48px;
+  --tap-xl: 52px;
+
+  /* ── BREAKPOINTS ───────────────────────────────────────────────── */
+  --bp-narrow: 480px;     /* phone-portrait single-column threshold */
+  --bp-content: 680px;    /* max content width — single-column form */
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SEMANTIC ELEMENT MAPPING — use these classes when not using vars.
+═══════════════════════════════════════════════════════════════════ */
+
+.t-display  { font-family:var(--font); font-size:var(--t-display-size); font-weight:var(--t-display-weight); color:var(--w); }
+.t-h1       { font-family:var(--font); font-size:var(--t-h1-size);      font-weight:var(--t-h1-weight); }
+.t-h2       { font-family:var(--font); font-size:var(--t-h2-size);      font-weight:var(--t-h2-weight); }
+.t-h3       { font-family:var(--font); font-size:var(--t-h3-size);      font-weight:var(--t-h3-weight); color:var(--g8); }
+.t-body     { font-family:var(--font); font-size:var(--t-body-size);    font-weight:var(--t-body-weight); line-height:var(--t-body-leading); color:var(--gr9); }
+.t-control  { font-family:var(--font); font-size:var(--t-control-size); font-weight:var(--t-control-weight); }
+.t-label    { font-family:var(--font); font-size:var(--t-label-size);   font-weight:var(--t-label-weight); letter-spacing:var(--t-label-tracking); text-transform:uppercase; color:var(--gr5); }
+.t-meta     { font-family:var(--font); font-size:var(--t-meta-size);    font-weight:var(--t-meta-weight); color:var(--t-meta-color); }
+.t-tiny     { font-family:var(--font); font-size:var(--t-tiny-size);    font-weight:var(--t-tiny-weight); letter-spacing:var(--t-tiny-tracking); }
+.t-mono     { font-family:var(--mono); font-size:var(--t-mono-size);    font-weight:var(--t-mono-weight); }
+.t-numeric  { font-family:var(--mono); font-size:var(--t-numeric-size); font-weight:var(--t-numeric-weight); }

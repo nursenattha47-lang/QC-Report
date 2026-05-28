@@ -1,0 +1,35 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .row { display:flex; align-items:flex-end; gap:18px; flex-wrap:wrap; }
+  .tap { background:var(--g6); color:#fff; border-radius:10px; font-family:var(--font); font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 14px; }
+  .item { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .name { font-family:var(--mono); font-size:10px; font-weight:700; color:var(--g8); }
+  .use { font-size:10px; color:var(--gr5); text-align:center; max-width:110px; line-height:1.3; }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">Tap targets — 44 px minimum on QC product</div>
+  <div class="row">
+    <div class="item">
+      <div class="tap" style="height:36px;font-size:11px">btn-sm</div>
+      <div class="name">36 px</div>
+      <div class="use">cchip · btn-sm only</div>
+    </div>
+    <div class="item">
+      <div class="tap" style="height:44px;font-size:13px">chip</div>
+      <div class="name">44 px ← MIN</div>
+      <div class="use">chip · num-btn · select</div>
+    </div>
+    <div class="item">
+      <div class="tap" style="height:48px;font-size:13px">add LOT</div>
+      <div class="name">48 px</div>
+      <div class="use">add · checkbox row · upload</div>
+    </div>
+    <div class="item">
+      <div class="tap" style="height:52px;font-size:15px;padding:0 24px">💾 บันทึก</div>
+      <div class="name">52 px</div>
+      <div class="use">primary CTA</div>
+    </div>
+  </div>
+</div>
+</body></html>

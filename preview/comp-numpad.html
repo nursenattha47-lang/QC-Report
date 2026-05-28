@@ -1,0 +1,166 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .sect { display:flex; flex-direction:column; gap:8px; }
+  .sect-head { display:flex; justify-content:space-between; align-items:baseline; }
+  .sect-label { font-size:13px; font-weight:700; letter-spacing:.5px; color:#6b7280; text-transform:uppercase; }
+  .sect-count { font-family:var(--mono); font-size:14px; font-weight:700; color:#245233; background:#e1f5e9; padding:3px 10px; border-radius:100px; }
+
+  /* Machine card — explicit on/idle/broken state */
+  .mach-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
+  .mach { padding:10px 12px; border:1.5px solid #d1d5db; border-radius:10px; background:#fff; display:flex; flex-direction:column; gap:6px; }
+  .mach.on { background:#245233; border-color:#245233; color:#fff; }
+  .mach.broken { border-color:#c53030; background:#fff5f5; }
+  .mach-row { display:flex; justify-content:space-between; align-items:center; }
+  .mach-no { font-family:var(--mono); font-size:18px; font-weight:800; }
+  .mach.on .mach-no { color:#fff; }
+  .mach-pill { font-size:12px; font-weight:700; padding:4px 10px; border-radius:100px; background:#f3f4f6; color:#6b7280; }
+  .mach.on .mach-pill { background:rgba(255,255,255,.22); color:#fff; }
+  .mach.broken .mach-pill { background:#c53030; color:#fff; }
+  .mini-row { display:flex; gap:4px; }
+  .mini-chip { flex:1; font-size:12px; font-weight:700; padding:5px 8px; border-radius:8px; background:#f3f4f6; color:#6b7280; border:1.5px solid #d1d5db; cursor:pointer; min-height:32px; }
+  .mini-chip.on-gray { background:#374151; border-color:#374151; color:#fff; }
+  .mini-chip.on-red { background:#c53030; border-color:#c53030; color:#fff; }
+  .mach-note { font-family:var(--font); font-size:13px; padding:7px 10px; border:1.5px solid #d1d5db; border-radius:8px; background:#fff; color:#111827; }
+
+  /* Vehicle list — chip list + add-input */
+  .veh-wrap { background:#f9fafb; border:1.5px solid #d1d5db; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+  .veh-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .veh-chip { display:inline-flex; align-items:center; gap:6px; background:#245233; color:#fff; border-radius:100px; padding:6px 6px 6px 14px; font-family:var(--mono); font-size:14px; font-weight:700; }
+  .veh-chip-x { width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,.22); color:#fff; border:none; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; }
+  .veh-add-row { display:grid; grid-template-columns:1fr auto auto; gap:6px; align-items:center; }
+  .veh-add-input { font-family:var(--mono); font-size:16px; font-weight:700; padding:9px 12px; border:1.5px solid #d1d5db; border-radius:10px; background:#fff; color:#111827; outline:none; }
+  .veh-add-btn { font-family:var(--font); font-size:14px; font-weight:700; padding:9px 14px; border:none; border-radius:10px; background:#2e6b42; color:#fff; cursor:pointer; min-height:40px; }
+  .veh-quick { font-family:var(--font); font-size:12px; color:#6b7280; }
+  .veh-quick-row { display:flex; gap:5px; flex-wrap:wrap; }
+  .veh-quick-chip { font-family:var(--mono); font-size:13px; font-weight:700; padding:5px 12px; border-radius:100px; background:#fff; border:1.5px solid #d1d5db; color:#374151; cursor:pointer; min-height:32px; }
+
+  /* Score — same gradient scale, kept */
+  .score-wrap { background:#f9fafb; border:1.5px solid #d1d5db; border-radius:12px; padding:14px; }
+  .score-readout { display:flex; align-items:baseline; gap:10px; margin-bottom:10px; }
+  .score-big { font-family:var(--mono); font-size:48px; font-weight:800; color:#1d4ed8; line-height:1; }
+  .score-of { font-family:var(--mono); font-size:18px; font-weight:600; color:#6b7280; }
+  .score-tag { font-size:13px; font-weight:700; color:#1d4ed8; background:#dbeafe; padding:4px 10px; border-radius:100px; margin-left:auto; }
+  .score-bar { display:grid; grid-template-columns:repeat(10, 1fr); gap:3px; height:36px; border-radius:6px; overflow:hidden; }
+  .score-seg { background:#e5e7eb; border:none; cursor:pointer; font-family:var(--mono); font-size:12px; font-weight:700; color:#9ca3af; }
+  .score-seg.filled { color:#fff; }
+  .score-seg.s1, .score-seg.s2, .score-seg.s3 { background:#c53030; }
+  .score-seg.s4, .score-seg.s5, .score-seg.s6 { background:#b45309; }
+  .score-seg.s7, .score-seg.s8 { background:#52aa70; }
+  .score-seg.s9, .score-seg.s10 { background:#1d4ed8; }
+  .score-seg.dim { opacity:.18; }
+</style></head><body>
+<div class="card-frame">
+
+  <div class="sect">
+    <div class="sect-head">
+      <span class="sect-label">เครื่องกวน 1-9</span>
+      <span class="sect-count">5 ใช้ · 3 ไม่ใช้ · 1 เสีย</span>
+    </div>
+    <div class="mach-grid">
+      <div class="mach on">
+        <div class="mach-row"><span class="mach-no">1</span><span class="mach-pill">ใช้</span></div>
+      </div>
+      <div class="mach on">
+        <div class="mach-row"><span class="mach-no">2</span><span class="mach-pill">ใช้</span></div>
+      </div>
+      <div class="mach on">
+        <div class="mach-row"><span class="mach-no">3</span><span class="mach-pill">ใช้</span></div>
+      </div>
+      <div class="mach">
+        <div class="mach-row"><span class="mach-no">4</span></div>
+        <div class="mini-row">
+          <button class="mini-chip on-gray">ไม่ได้ใช้</button>
+          <button class="mini-chip">เสีย</button>
+        </div>
+      </div>
+      <div class="mach broken">
+        <div class="mach-row"><span class="mach-no">5</span><span class="mach-pill">เสีย</span></div>
+        <div class="mini-row">
+          <button class="mini-chip">ไม่ได้ใช้</button>
+          <button class="mini-chip on-red">เสีย</button>
+        </div>
+        <div class="mach-note">มอเตอร์ไหม้ — สั่งซ่อมแล้ว รอช่างมาเช้านี้</div>
+      </div>
+      <div class="mach on">
+        <div class="mach-row"><span class="mach-no">6</span><span class="mach-pill">ใช้</span></div>
+      </div>
+      <div class="mach">
+        <div class="mach-row"><span class="mach-no">7</span></div>
+        <div class="mini-row">
+          <button class="mini-chip on-gray">ไม่ได้ใช้</button>
+          <button class="mini-chip">เสีย</button>
+        </div>
+      </div>
+      <div class="mach on">
+        <div class="mach-row"><span class="mach-no">8</span><span class="mach-pill">ใช้</span></div>
+      </div>
+      <div class="mach">
+        <div class="mach-row"><span class="mach-no">9</span></div>
+        <div class="mini-row">
+          <button class="mini-chip on-gray">ไม่ได้ใช้</button>
+          <button class="mini-chip">เสีย</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect" style="margin-top:14px">
+    <div class="sect-head">
+      <span class="sect-label">ตรวจวัตถุดิบเสร็จแล้วคันที่</span>
+      <span class="sect-count">8 คัน</span>
+    </div>
+    <div class="veh-wrap">
+      <div class="veh-chips">
+        <span class="veh-chip">1<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">2<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">5<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">7<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">12<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">14<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">19<button class="veh-chip-x">✕</button></span>
+        <span class="veh-chip">23<button class="veh-chip-x">✕</button></span>
+      </div>
+      <div class="veh-add-row">
+        <input class="veh-add-input" placeholder="เลขคันถัดไป" value="24"/>
+        <button class="veh-add-btn">＋ เพิ่ม</button>
+      </div>
+      <div>
+        <div class="veh-quick">เพิ่มเร็ว — ลำดับต่อไป</div>
+        <div class="veh-quick-row" style="margin-top:5px">
+          <button class="veh-quick-chip">+24</button>
+          <button class="veh-quick-chip">+25</button>
+          <button class="veh-quick-chip">+26</button>
+          <button class="veh-quick-chip">+27</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sect" style="margin-top:14px">
+    <div class="sect-head">
+      <span class="sect-label">คะแนนความสะอาด (1-10)</span>
+    </div>
+    <div class="score-wrap">
+      <div class="score-readout">
+        <span class="score-big">8</span>
+        <span class="score-of">/ 10</span>
+        <span class="score-tag">ดีมาก</span>
+      </div>
+      <div class="score-bar">
+        <button class="score-seg s1 filled">1</button>
+        <button class="score-seg s2 filled">2</button>
+        <button class="score-seg s3 filled">3</button>
+        <button class="score-seg s4 filled">4</button>
+        <button class="score-seg s5 filled">5</button>
+        <button class="score-seg s6 filled">6</button>
+        <button class="score-seg s7 filled">7</button>
+        <button class="score-seg s8 filled">8</button>
+        <button class="score-seg s9 dim">9</button>
+        <button class="score-seg s10 dim">10</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>

@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>ระบบ QC อัญชลี</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g9:#0d2b1a;--g8:#1a3a2a;--g7:#245233;--g6:#2e6b42;--g5:#3d8c58;--g4:#52aa70;--g3:#7ecf97;--g2:#b5e8c5;--g1:#e1f5e9;--g0:#f2faf5;
+  --r5:#c53030;--r1:#fee2e2;--a5:#b45309;--a1:#fef3c7;--b6:#1d4ed8;--b1:#dbeafe;
+  --gr9:#111827;--gr7:#374151;--gr5:#6b7280;--gr3:#d1d5db;--gr1:#f3f4f6;--gr0:#f9fafb;
+  --w:#ffffff;
+  --rsm:6px;--rmd:10px;--rlg:14px;--rxl:20px;
+  --s1:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --s2:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.05);
+  --s3:0 8px 24px rgba(0,0,0,.10);
+  --font:'IBM Plex Sans Thai',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--font);background:var(--gr0);color:var(--gr9);font-size:14px;min-height:100vh;overscroll-behavior:none;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--g8);color:var(--w);position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+.topbar-inner{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;max-width:680px;margin:0 auto;}
+.topbar-co{font-size:10px;color:var(--g3);letter-spacing:.5px;}
+.topbar-title{font-size:16px;font-weight:700;}
+.topbar-status{font-size:11px;font-weight:500;color:var(--g3);display:flex;align-items:center;gap:5px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--g4);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── RECOVERY BANNER ── */
+.recovery-banner{background:#7c3aed;color:#fff;padding:10px 16px;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.recovery-banner.hidden{display:none;}
+.btn-restore{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);border-radius:100px;padding:5px 14px;font-family:var(--font);font-size:12px;font-weight:700;color:#fff;cursor:pointer;}
+.btn-dismiss{background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
+
+/* ── SYNC BANNER ── */
+.sync-banner{padding:8px 16px;font-size:11px;font-weight:600;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
+.sync-banner.syncing{background:var(--a1);color:var(--a5);}
+.sync-banner.saved{background:var(--g1);color:var(--g7);}
+.sync-banner.offline{background:var(--r1);color:var(--r5);}
+.sync-banner.hidden{display:none;}
+
+/* ── TABS ── */
+.tabs-wrap{background:var(--w);border-bottom:1px solid var(--gr3);}
+.tabs{display:flex;max-width:680px;margin:0 auto;}
+.tab-btn{flex:1;padding:12px 8px;font-family:var(--font);font-size:13px;font-weight:500;color:var(--gr5);background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;transition:all .2s;}
+.tab-btn.active{color:var(--g7);border-bottom-color:var(--g5);font-weight:700;}
+
+/* ── LAYOUT ── */
+.page{display:none;}.page.active{display:block;}
+.wrap{max-width:680px;margin:0 auto;padding:16px;}
+
+/* ── CARDS ── */
+.card{background:var(--w);border-radius:var(--rlg);border:1px solid var(--gr3);box-shadow:var(--s1);margin-bottom:12px;overflow:hidden;}
+.card-head{padding:12px 16px;border-bottom:1px solid var(--gr1);display:flex;justify-content:space-between;align-items:center;background:var(--gr0);}
+.card-title{font-size:13px;font-weight:700;color:var(--g8);display:flex;align-items:center;gap:7px;}
+.card-body{padding:14px 16px;}
+
+/* ── FORM ── */
+.field{margin-bottom:14px;}.field:last-child{margin-bottom:0;}
+.lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gr5);text-transform:uppercase;margin-bottom:6px;}
+.inp,.ta{width:100%;padding:9px 12px;border:1.5px solid var(--gr3);border-radius:var(--rmd);font-family:var(--font);font-size:14px;color:var(--gr9);background:var(--w);outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;}
+.inp:focus,.ta:focus{border-color:var(--g5);box-shadow:0 0 0 3px rgba(61,140,88,.12);}
+.ta{resize:vertical;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{padding:9px 16px;border:1.5px solid var(--gr3);border-radius:100px;font-family:var(--font);font-size:13px;font-weight:600;color:var(--gr7);background:var(--w);cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:flex;align-items:center;}
+.chip.ok{background:var(--g7);border-color:var(--g7);color:var(--w);}
+.chip.ng{background:var(--r5);border-color:var(--r5);color:var(--w);}
+.chip.warn{background:var(--a5);border-color:var(--a5);color:var(--w);}
+.chip.gray{background:var(--gr7);border-color:var(--gr7);color:var(--w);}
+.chip.blue{background:var(--b6);border-color:var(--b6);color:var(--w);}
+
+/* ── NUM GRID ── */
+.num-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.num-btn{width:44px;height:44px;border:1.5px solid var(--gr3);border-radius:var(--rmd);font-family:var(--mono);font-size:13px;font-weight:600;color:var(--gr7);background:var(--w);cursor:pointer;transition:all .15s;}
+.num-btn.on{background:var(--g7);border-color:var(--g7);color:var(--w);}
+.num-btn.sm{width:38px;height:38px;font-size:12px;}
+
+/* ── SCORE ── */
+.score-row{display:flex;gap:5px;flex-wrap:wrap;}
+.score-btn{width:40px;height:40px;border:1.5px solid var(--gr3);border-radius:var(--rsm);font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gr5);background:var(--w);cursor:pointer;transition:all .15s;}
+.score-btn.on{background:var(--b6);border-color:var(--b6);color:var(--w);}
+
+/* ── ALERTS ── */
+.alert{border-radius:var(--rmd);padding:10px 14px;margin-top:8px;font-size:12px;font-weight:600;}
+.alert.ok{background:var(--g1);color:var(--g7);}
+.alert.warn{background:var(--r1);color:var(--r5);}
+.alert.info{background:var(--b1);color:var(--b6);}
+.alert.note{background:var(--a1);color:var(--a5);}
+.alert-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+
+/* ── ROUND GRID ── */
+.round-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px;}
+.round-btn{padding:13px 6px;border-radius:var(--rmd);border:1.5px solid var(--gr3);background:var(--w);cursor:pointer;position:relative;font-family:var(--font);text-align:center;transition:all .15s;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.round-btn.done::after{content:'✓';position:absolute;top:4px;right:7px;font-size:10px;font-weight:800;color:var(--g5);}
+.round-ico{font-size:20px;margin-bottom:4px;}
+.round-lbl{font-size:10px;font-weight:700;line-height:1.3;color:var(--gr7);}
+
+/* ── ROUND BANNER ── */
+.round-banner{border-radius:var(--rlg);padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;color:var(--w);}
+.round-banner-name{font-size:18px;font-weight:700;}
+.round-banner-sub{font-size:11px;opacity:.8;margin-bottom:3px;}
+.time-badge{font-family:var(--mono);font-size:12px;font-weight:500;background:rgba(255,255,255,.2);border-radius:100px;padding:4px 11px;}
+
+/* ── COLLAPSIBLE ── */
+.section{border:1px solid var(--gr3);border-radius:var(--rlg);overflow:hidden;margin-bottom:10px;box-shadow:var(--s1);}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;cursor:pointer;background:var(--w);transition:background .15s;min-height:52px;}
+.section-head:hover{background:var(--gr0);}
+.section-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.section-arrow{font-size:13px;color:var(--gr5);transition:transform .2s;}
+.section-arrow.open{transform:rotate(180deg);}
+.section-body{padding:14px 16px;background:var(--w);border-top:1px solid var(--gr1);}
+.section-body.hidden{display:none;}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--gr1);margin:14px 0;}
+
+/* ── LOT ── */
+.lot-summary{background:var(--g8);color:var(--w);border-radius:var(--rlg);padding:12px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.lot-summary-num{font-size:36px;font-weight:800;color:var(--g3);font-family:var(--mono);}
+.lot-sub{font-size:10px;opacity:.7;letter-spacing:.5px;}
+.lot-item{border:1px solid var(--gr3);border-radius:var(--rmd);padding:12px;margin-bottom:8px;background:var(--gr0);}
+.lot-item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.lot-item-num{font-size:12px;font-weight:700;color:var(--g8);}
+.btn-lot-del{font-size:11px;font-weight:600;color:var(--r5);background:none;border:none;cursor:pointer;font-family:var(--font);padding:4px 8px;border-radius:var(--rsm);transition:background .15s;min-height:36px;}
+.btn-lot-del:hover{background:var(--r1);}
+.btn-add-lot{width:100%;padding:12px;border:2px dashed var(--g4);border-radius:var(--rmd);background:transparent;color:var(--g6);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;min-height:48px;}
+.btn-add-lot:hover{background:var(--g0);}
+
+/* ── LOT BUILDER ── */
+.lot-builder{background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--rmd);padding:12px;margin-bottom:10px;}
+.lot-builder-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g6);margin-bottom:10px;}
+.lot-builder-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;align-items:end;margin-bottom:8px;}
+@media(max-width:480px){.lot-builder-grid{grid-template-columns:1fr 1fr 1fr;}}
+.lot-builder-result{display:flex;align-items:center;gap:8px;background:var(--w);border:1.5px solid var(--g3);border-radius:var(--rmd);padding:9px 12px;margin-bottom:8px;}
+.lot-builder-result-code{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--g8);flex:1;letter-spacing:1px;}
+.btn-lot-apply{font-family:var(--font);font-size:12px;font-weight:700;padding:8px 14px;border-radius:100px;background:var(--g6);color:var(--w);border:none;cursor:pointer;transition:background .15s;white-space:nowrap;min-height:40px;}
+.lot-sel{width:100%;padding:8px 10px;border:1.5px solid var(--gr3);border-radius:var(--rmd);font-family:var(--font);font-size:13px;color:var(--gr9);background:var(--w);outline:none;-webkit-appearance:none;}
+.lot-sel:focus{border-color:var(--g5);}
+.lot-sel-label{font-size:10px;font-weight:700;color:var(--gr5);text-transform:uppercase;margin-bottom:4px;letter-spacing:.4px;}
+
+/* ── CRITERIA CHIPS ── */
+.criteria-group{margin-bottom:8px;}.criteria-group:last-child{margin-bottom:0;}
+.criteria-group-label{font-size:11px;font-weight:700;color:var(--gr7);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.criteria-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.cchip{padding:7px 13px;border:1.5px solid var(--gr3);border-radius:100px;font-family:var(--font);font-size:12px;font-weight:600;color:var(--gr7);background:var(--w);cursor:pointer;transition:all .15s;white-space:nowrap;min-height:38px;display:flex;align-items:center;}
+.cchip.ok{background:var(--g7);border-color:var(--g7);color:var(--w);}
+.cchip.ng{background:var(--r5);border-color:var(--r5);color:var(--w);}
+.cchip.warn{background:var(--a5);border-color:var(--a5);color:var(--w);}
+
+/* ── MACHINE CARD ── */
+.machine-card{border:1px solid var(--gr3);border-radius:var(--rmd);padding:11px 13px;margin-bottom:8px;background:var(--gr0);}
+.machine-card-title{font-size:12px;font-weight:700;color:var(--gr7);margin-bottom:8px;}
+
+/* ── EXTRA ── */
+.extra-section{border:1.5px dashed var(--a5);border-radius:var(--rlg);overflow:hidden;margin-bottom:12px;}
+.extra-head{padding:11px 14px;background:var(--a1);display:flex;justify-content:space-between;align-items:center;}
+.extra-title{font-size:13px;font-weight:700;color:var(--a5);}
+.extra-body{padding:14px 16px;background:var(--w);}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-radius:var(--rmd);border:1.5px solid var(--gr3);background:var(--gr0);margin-bottom:7px;cursor:pointer;transition:all .15s;min-height:48px;}
+.checkbox-row.checked{border-color:var(--g4);background:var(--g0);}
+.checkbox-row input[type=checkbox]{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--g6);}
+.checkbox-lbl{font-size:13px;font-weight:600;color:var(--gr7);}
+.checkbox-row.checked .checkbox-lbl{color:var(--g8);}
+
+/* ── PHOTO ── */
+.photo-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px;}
+.photo-thumb{position:relative;display:inline-block;}
+.photo-thumb img{width:72px;height:72px;border-radius:var(--rmd);object-fit:cover;border:2px solid var(--g3);}
+.photo-del{position:absolute;top:-5px;right:-5px;width:20px;height:20px;border-radius:50%;background:var(--r5);color:var(--w);border:none;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.photo-upload-label{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;border-radius:var(--rmd);border:1.5px dashed var(--g3);background:var(--g0);color:var(--g6);font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;min-height:48px;}
+
+/* ── DONE BOX ── */
+.done-box{border-radius:var(--rlg);padding:14px 16px;margin-bottom:12px;}
+.done-box.pending{background:var(--gr0);border:1px solid var(--gr3);}
+.done-box.complete{background:var(--g0);border:1.5px solid var(--g4);}
+.done-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.done-label{font-size:13px;font-weight:700;color:var(--gr9);}
+
+/* ── BUTTONS ── */
+.btn{width:100%;padding:15px;border:none;border-radius:var(--rmd);font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;min-height:52px;}
+.btn-primary{background:var(--g6);color:var(--w);}
+.btn-primary:active{background:var(--g7);}
+.btn-dark{background:var(--g9);color:var(--w);}
+.btn-dark:active{background:var(--g8);}
+.btn-outline{background:var(--w);color:var(--g7);border:2px solid var(--g4);}
+.btn-gap{margin-bottom:10px;}
+.btn-sm{font-family:var(--font);font-size:11px;font-weight:700;padding:6px 14px;border-radius:100px;border:1px solid var(--g4);background:var(--w);color:var(--g7);cursor:pointer;transition:all .15s;min-height:36px;}
+
+/* ── HISTORY ── */
+.hist-item{border:1px solid var(--gr3);border-radius:var(--rlg);padding:13px 16px;margin-bottom:10px;background:var(--w);box-shadow:var(--s1);}
+.hist-date{font-size:14px;font-weight:700;color:var(--g8);}
+.hist-meta{font-size:12px;color:var(--gr5);margin-top:3px;}
+.hist-badge{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.hist-badge.ok{background:var(--g1);color:var(--g7);}
+.hist-badge.warn{background:var(--r1);color:var(--r5);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--g9);color:var(--w);padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;box-shadow:var(--s3);opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;white-space:nowrap;max-width:90vw;}
+.toast.show{opacity:1;}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.two-col{grid-template-columns:1fr;}}
+
+/* ── OFFLINE INDICATOR ── */
+#offlineOverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:none;align-items:center;justify-content:center;}
+#offlineOverlay.show{display:flex;}
+.offline-box{background:var(--w);border-radius:var(--rlg);padding:24px;text-align:center;max-width:280px;margin:16px;}
+.offline-icon{font-size:40px;margin-bottom:12px;}
+.offline-title{font-size:16px;font-weight:700;color:var(--gr9);margin-bottom:6px;}
+.offline-sub{font-size:12px;color:var(--gr5);}
+</style>
+</head>
+<body>
+
+<!-- RECOVERY BANNER -->
+<div id="recoveryBanner" class="recovery-banner hidden">
+  <span>🔄 พบข้อมูลที่บันทึกไว้ก่อนหน้า — ต้องการกู้คืนหรือไม่?</span>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button class="btn-restore" onclick="restoreDraft()">กู้คืน</button>
+    <button class="btn-dismiss" onclick="dismissRecovery()">✕</button>
+  </div>
+</div>
+
+<!-- SYNC BANNER -->
+<div id="syncBanner" class="sync-banner hidden"></div>
+
+<!-- TOPBAR -->
+<header>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <div class="topbar-co">บริษัท อัญชลี ฟรุ๊ต โปรดักส์ จำกัด</div>
+        <div class="topbar-title">📊 ระบบ QC ประจำวัน</div>
+      </div>
+      <div id="saveBar" class="topbar-status">
+        <div class="status-dot"></div>
+        <span>พร้อมใช้งาน</span>
+      </div>
+    </div>
+  </div>
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchPage('form',this)">📋 กรอก QC</button>
+      <button class="tab-btn" onclick="switchPage('hist',this)">📁 ประวัติ</button>
+    </div>
+  </div>
+</header>
+
+<!-- FORM PAGE -->
+<div id="page-form" class="page active">
+  <div class="wrap">
+
+    <div class="card">
+      <div class="card-head"><div class="card-title">👤 ข้อมูลผู้รายงาน</div></div>
+      <div class="card-body">
+        <div class="two-col">
+          <div class="field">
+            <label class="lbl">วันที่</label>
+            <input type="date" id="f_date" class="inp" oninput="fieldChanged()"/>
+          </div>
+          <div class="field">
+            <label class="lbl">ชื่อผู้รายงาน</label>
+            <input type="text" id="f_rep" class="inp" value="อัญชลี" oninput="fieldChanged()"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRE-CHECK -->
+    <div class="card">
+      <div class="card-head"><div class="card-title">1️⃣ จิ้มสินค้าทุก LOT ที่ไม่ได้ล็อคผลิตวันนี้</div></div>
+      <div class="card-body">
+        <div class="field">
+          <label class="lbl">สถานะ</label>
+          <div class="chips">
+            <button class="chip" id="pc_yes" onclick="setPc('yes')">✅ ทำเสร็จแล้ว</button>
+            <button class="chip" id="pc_no" onclick="setPc('no')">❌ ยังไม่เสร็จ</button>
+          </div>
+          <div id="pc_time" style="display:none;margin-top:8px"></div>
+        </div>
+        <div class="field">
+          <label class="lbl">Comment — ความนิ่ม / เหนียว / กลิ่น / สี</label>
+          <textarea id="f_pcc" class="ta" rows="2" oninput="fieldChanged()"></textarea>
+        </div>
+        <div class="field">
+          <label class="lbl">LOT ที่ต้องแก้ไข</label>
+          <input type="text" id="f_pcf" class="inp" placeholder="-" oninput="fieldChanged()"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROUND SELECTOR -->
+    <div class="card">
+      <div class="card-head"><div class="card-title">⏱️ เลือกรอบ QC</div></div>
+      <div class="card-body">
+        <div class="round-grid" id="roundGrid"></div>
+        <div style="font-size:11px;color:var(--gr5);margin-top:6px">กดเลือกรอบที่ต้องการบันทึก · ✓ = เสร็จแล้ว</div>
+      </div>
+    </div>
+
+    <div id="roundForm"></div>
+
+    <button class="btn btn-primary btn-gap" onclick="doSave()">💾 บันทึกลง Supabase</button>
+    <button class="btn btn-dark btn-gap" onclick="doCopyAll()">📋 Copy สรุปทั้งวัน → LINE</button>
+    <div style="height:24px"></div>
+  </div>
+</div>
+
+<!-- HISTORY PAGE -->
+<div id="page-hist" class="page">
+  <div class="wrap">
+    <div class="card">
+      <div class="card-head"><div class="card-title">📁 ประวัติรายงาน QC</div></div>
+      <div class="card-body">
+        <button class="btn btn-primary" onclick="loadHist()">🔄 โหลดข้อมูลย้อนหลัง</button>
+        <div id="histList" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════════ */
+const SUPABASE_URL = "https://nwjpwnxngculqkubxgxl.supabase.co/rest/v1/";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53anB3bnhuZ2N1bHFrdWJ4Z3hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NzkwMDMsImV4cCI6MjA5NTM1NTAwM30.CC_8XQC_9CP0ncrbGiAB5KDIKMPQhrSD4z7CEe7ohuc";
+const TABLE = "qc_reports";
+
+const SUPABASE_HEADERS = {
+  "Content-Type": "application/json",
+  "apikey": SUPABASE_KEY,
+  "Authorization": "Bearer " + SUPABASE_KEY,
+  "Prefer": "return=representation"
+};
+
+/* ═══════════════════════════════════════════════════
+   STORAGE KEYS
+═══════════════════════════════════════════════════ */
+const LS_KEY     = "qc_anjali_v3";
+const LS_DRAFT   = "qc_anjali_draft_v3";
+const IDB_NAME   = "QCAnjaliiDB";
+const IDB_STORE  = "drafts";
+const IDB_KEY    = "current";
+
+/* ═══════════════════════════════════════════════════
+   LOT CODES + ROUNDS
+═══════════════════════════════════════════════════ */
+const LOT_CODES = [
+  {code:"B",name:"สับปะรด",emoji:"🍍"},
+  {code:"C",name:"มะละกอ",emoji:"🫒"},
+  {code:"D",name:"มะม่วง",emoji:"🥭"},
+  {code:"E",name:"ลิ้นจี่",emoji:"🍈"},
+  {code:"F",name:"ลำไย",emoji:"🍇"},
+  {code:"G",name:"มะขาม",emoji:"🟫"},
+  {code:"H",name:"กล้วย",emoji:"🍌"},
+  {code:"J",name:"ส้ม",emoji:"🍊"},
+  {code:"K",name:"องุ่น",emoji:"🍇"},
+  {code:"L",name:"แตงโม",emoji:"🍉"},
+];
+
+const RM = [
+  {k:"m1",lb:"รอบ1 เช้า",ic:"🌅",cl:"#245233"},
+  {k:"m2",lb:"รอบ2 เช้า",ic:"🌤️",cl:"#1565c0"},
+  {k:"m3",lb:"รอบ3 เช้า",ic:"☀️",cl:"#b45309"},
+  {k:"a1",lb:"รอบ1 บ่าย",ic:"🌞",cl:"#6a1b9a"},
+  {k:"a2",lb:"รอบ2 บ่าย",ic:"🌇",cl:"#7b3f00"},
+  {k:"a3",lb:"รอบ3 เย็น",ic:"🌆",cl:"#2e4a5a"}
+];
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let AR = "m1";
+let ST = initST();
+let _saveTimer = null;
+let _idbDb = null;
+let _isOnline = navigator.onLine;
+
+function pad(n){ return n<10?"0"+n:n; }
+function now(){ let d=new Date(); return pad(d.getHours())+":"+pad(d.getMinutes()); }
+
+function initST(){
+  let d = new Date();
+  let dt = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  let rds = {};
+  RM.forEach(r=>{ rds[r.k]=newRD(); });
+  return {date:dt,rep:"อัญชลี",pc:"",pct:"",pcc:"",pcf:"",rounds:rds,_savedAt:null};
+}
+function newRD(){ return {done:false,dt:"",lots:[],
+  boiler:{temp:"",press:"",water:"",pump:"",smoke:"",notes:{}},
+  stir:{am:[],ist:{},ino:{},ou:"",ook:"",on2:"",sy:"",syn:"",col:"",coln:"",fl:"",fln:"",dr:"",dn:"",cs:"",cn:"",colorImgs:[]},
+  mill:{mc:[],fs:{},fn:{},vh:[],ci:null,cn2:"",cv:"",cvn:"",dr:"",cs:"",cn3:"",mist:{},mino:{},rmCheck:{}},
+  pack:{st:"",se:"",sr:"",ex:"",exn:"",mt:null,mn:"",dr:"",cs:"",cn:"",ct:"",wt:"",wtn:"",sl:"",sln:"",pkg:"",pkgn:"",expiryImgs:[]},
+  ed:{checks:[],docDetail:"",images:[],timestamp:""}};}
+function newLot(){
+  let d=new Date();
+  return {num:"",bcode:"",boven:"1",bday:pad(d.getDate()),bmonth:pad(d.getMonth()+1),byear:String(d.getFullYear()).slice(-2),btimes:"1",taste:"",smell:"",color:"",fix:""};
+}
+
+/* ═══════════════════════════════════════════════════
+   INDEXEDDB
+═══════════════════════════════════════════════════ */
+function openIDB(){
+  return new Promise((resolve,reject)=>{
+    if(_idbDb){ resolve(_idbDb); return; }
+    let req = indexedDB.open(IDB_NAME,1);
+    req.onupgradeneeded = e=>{ e.target.result.createObjectStore(IDB_STORE); };
+    req.onsuccess = e=>{ _idbDb=e.target.result; resolve(_idbDb); };
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function idbSave(data){
+  try {
+    let db = await openIDB();
+    return new Promise((resolve,reject)=>{
+      let tx = db.transaction(IDB_STORE,"readwrite");
+      tx.objectStore(IDB_STORE).put(JSON.stringify(data), IDB_KEY);
+      tx.oncomplete = ()=>resolve(true);
+      tx.onerror = ()=>reject(tx.error);
+    });
+  } catch(e){ console.warn("IDB save failed:",e); return false; }
+}
+async function idbLoad(){
+  try {
+    let db = await openIDB();
+    return new Promise((resolve,reject)=>{
+      let tx = db.transaction(IDB_STORE,"readonly");
+      let req = tx.objectStore(IDB_STORE).get(IDB_KEY);
+      req.onsuccess = ()=>resolve(req.result ? JSON.parse(req.result) : null);
+      req.onerror = ()=>reject(req.error);
+    });
+  } catch(e){ return null; }
+}
+async function idbClear(){
+  try {
+    let db = await openIDB();
+    return new Promise((resolve)=>{
+      let tx = db.transaction(IDB_STORE,"readwrite");
+      tx.objectStore(IDB_STORE).delete(IDB_KEY);
+      tx.oncomplete = ()=>resolve();
+    });
+  } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAFT PERSISTENCE — MULTI-LAYER
+═══════════════════════════════════════════════════ */
+function saveDraftNow(){
+  let snapshot = JSON.stringify(ST);
+  // Layer 1: localStorage
+  try{ localStorage.setItem(LS_KEY, snapshot); } catch(e){}
+  // Layer 2: sessionStorage
+  try{ sessionStorage.setItem(LS_KEY, snapshot); } catch(e){}
+  // Layer 3: IndexedDB
+  idbSave(ST);
+  // Update status
+  ST._savedAt = new Date().toISOString();
+}
+
+function saveDraftDebounced(){
+  setSaveBar("saving");
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(()=>{
+    saveDraftNow();
+    setSaveBar("saved");
+  }, 600);
+}
+
+// Called on every field change
+function fieldChanged(){
+  syncFieldsToState();
+  saveDraftDebounced();
+}
+
+function syncFieldsToState(){
+  let dEl = document.getElementById("f_date");
+  let rEl = document.getElementById("f_rep");
+  let pccEl = document.getElementById("f_pcc");
+  let pcfEl = document.getElementById("f_pcf");
+  if(dEl) ST.date = dEl.value || ST.date;
+  if(rEl) ST.rep  = rEl.value || ST.rep;
+  if(pccEl) ST.pcc = pccEl.value;
+  if(pcfEl) ST.pcf = pcfEl.value;
+}
+
+function autosave(){
+  syncFieldsToState();
+  saveDraftDebounced();
+}
+
+/* ═══════════════════════════════════════════════════
+   CRASH RECOVERY — CHECK ON LOAD
+═══════════════════════════════════════════════════ */
+async function checkForDraft(){
+  let raw = null;
+  // Try localStorage first
+  try{ raw = localStorage.getItem(LS_KEY); } catch(e){}
+  // Fallback: sessionStorage
+  if(!raw){ try{ raw = sessionStorage.getItem(LS_KEY); } catch(e){} }
+  // Fallback: IndexedDB
+  if(!raw){
+    let idbData = await idbLoad();
+    if(idbData) raw = JSON.stringify(idbData);
+  }
+  if(!raw) return;
+  try {
+    let saved = JSON.parse(raw);
+    // Check if it's for today
+    let today = new Date().toISOString().slice(0,10);
+    if(saved.date === today || saved._savedAt){
+      // Show recovery banner
+      window._pendingDraft = saved;
+      document.getElementById("recoveryBanner").classList.remove("hidden");
+    } else {
+      // Old date — just load silently
+      loadState(saved);
+    }
+  } catch(e){ console.warn("Draft parse error:",e); }
+}
+
+function restoreDraft(){
+  if(!window._pendingDraft) return;
+  loadState(window._pendingDraft);
+  document.getElementById("recoveryBanner").classList.add("hidden");
+  toast("✅ กู้คืนข้อมูลเรียบร้อย");
+  window._pendingDraft = null;
+}
+
+function dismissRecovery(){
+  document.getElementById("recoveryBanner").classList.add("hidden");
+  window._pendingDraft = null;
+  // Start fresh
+  ST = initST();
+  renderAll();
+}
+
+function loadState(saved){
+  ST = saved;
+  // Ensure all rounds exist
+  RM.forEach(r=>{ if(!ST.rounds[r.k]) ST.rounds[r.k]=newRD(); });
+  renderAll();
+}
+
+function renderAll(){
+  let dEl = document.getElementById("f_date");
+  let rEl = document.getElementById("f_rep");
+  let pccEl = document.getElementById("f_pcc");
+  let pcfEl = document.getElementById("f_pcf");
+  if(dEl) dEl.value = ST.date || "";
+  if(rEl) rEl.value = ST.rep || "";
+  if(pccEl) pccEl.value = ST.pcc || "";
+  if(pcfEl) pcfEl.value = ST.pcf || "";
+  // Pre-check UI
+  if(ST.pc){
+    document.getElementById("pc_yes").className="chip"+(ST.pc==="yes"?" ok":"");
+    document.getElementById("pc_no").className="chip"+(ST.pc==="no"?" ng":"");
+    if(ST.pc==="yes"&&ST.pct){
+      let el=document.getElementById("pc_time");
+      el.style.display="block";
+      el.innerHTML='<div class="alert ok">🕐 บันทึกเวลา: '+ST.pct+' น.</div>';
+    }
+  }
+  renderRoundGrid();
+  renderRoundForm();
+}
+
+/* ═══════════════════════════════════════════════════
+   ONLINE / OFFLINE
+═══════════════════════════════════════════════════ */
+function updateOnlineStatus(){
+  _isOnline = navigator.onLine;
+  if(!_isOnline){
+    setSyncBanner("offline","📵 ออฟไลน์ — ข้อมูลบันทึกในเครื่องแล้ว จะส่งเมื่อมีสัญญาณ");
+  } else {
+    document.getElementById("syncBanner").classList.add("hidden");
+  }
+}
+window.addEventListener("online", updateOnlineStatus);
+window.addEventListener("offline", updateOnlineStatus);
+
+/* ═══════════════════════════════════════════════════
+   VISIBILITY CHANGE — auto-save when app switches
+═══════════════════════════════════════════════════ */
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState === "hidden"){
+    syncFieldsToState();
+    saveDraftNow(); // Immediate save, no debounce
+  }
+});
+
+/* ═══════════════════════════════════════════════════
+   BEFORE UNLOAD — warn on unsaved changes
+═══════════════════════════════════════════════════ */
+window.addEventListener("beforeunload", e=>{
+  syncFieldsToState();
+  saveDraftNow();
+  // Only warn if there's actual data
+  let hasData = RM.some(r=>ST.rounds[r.k].lots.length>0||ST.rounds[r.k].done);
+  if(hasData){
+    e.preventDefault();
+    e.returnValue = "ข้อมูล QC ยังไม่ได้บันทึกลง Supabase — ต้องการออกหรือไม่?";
+    return e.returnValue;
+  }
+});
+
+/* ═══════════════════════════════════════════════════
+   PAGE RESUME (for LINE browser)
+═══════════════════════════════════════════════════ */
+window.addEventListener("pageshow", e=>{
+  if(e.persisted){
+    // Page loaded from bfcache (back/forward navigation)
+    checkForDraft();
+  }
+});
+
+/* ═══════════════════════════════════════════════════
+   SAVE BAR
+═══════════════════════════════════════════════════ */
+function setSaveBar(status){
+  let bar = document.getElementById("saveBar");
+  if(status==="saving") bar.innerHTML='<div class="status-dot" style="background:var(--a5)"></div><span>กำลังบันทึก...</span>';
+  else if(status==="saved") bar.innerHTML='<div class="status-dot"></div><span>บันทึกแล้ว</span>';
+  else if(status==="error") bar.innerHTML='<div class="status-dot" style="background:var(--r5)"></div><span>บันทึกไม่สำเร็จ</span>';
+}
+function setSyncBanner(type,msg){
+  let el=document.getElementById("syncBanner");
+  el.className="sync-banner "+type;
+  el.textContent=msg;
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+window.addEventListener("load",async ()=>{
+  updateOnlineStatus();
+  await checkForDraft();
+  // If no draft was found, just render defaults
+  if(!document.getElementById("recoveryBanner").classList.contains("hidden")===false){
+    renderAll();
+  }
+  renderAll();
+});
+
+/* ═══════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════ */
+function switchPage(p,btn){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+  document.getElementById("page-"+p).classList.add("active");
+  if(p==="hist") loadHist();
+}
+
+/* ═══════════════════════════════════════════════════
+   ROUND GRID
+═══════════════════════════════════════════════════ */
+function renderRoundGrid(){
+  let h="";
+  RM.forEach(r=>{
+    let rd=ST.rounds[r.k];
+    let isActive=AR===r.k, isDone=rd.done;
+    let bdr=isActive?"2px solid "+r.cl:(isDone?"1.5px solid var(--g4)":"1px solid var(--gr3)");
+    let bg=isActive?r.cl+"18":(isDone?"var(--g0)":"var(--w)");
+    h+=`<button class="round-btn${isDone?" done":""}" style="border:${bdr};background:${bg}" onclick="selR('${r.k}')">
+      <div class="round-ico">${r.ic}</div>
+      <div class="round-lbl" style="color:${isActive?r.cl:isDone?"var(--g7)":"var(--gr7)"}">${r.lb}</div>
+    </button>`;
+  });
+  document.getElementById("roundGrid").innerHTML=h;
+}
+function selR(k){ AR=k; renderRoundGrid(); renderRoundForm(); }
+
+/* ═══════════════════════════════════════════════════
+   ROUND FORM
+═══════════════════════════════════════════════════ */
+function renderRoundForm(){
+  let r=RM.find(x=>x.k===AR);
+  let rd=ST.rounds[AR];
+  let h="";
+
+  h+=`<div class="round-banner" style="background:${r.cl}">
+    <div>
+      <div class="round-banner-sub">${rd.done?"✅ บันทึกเรียบร้อย":"กำลังบันทึก"}</div>
+      <div class="round-banner-name">${r.ic} ${r.lb}</div>
+    </div>
+    ${rd.done?`<div class="time-badge">${rd.dt} น.</div>`:""}
+  </div>`;
+
+  h+=renderLots(r,rd);
+  h+=renderCollapsible("🫙","โรงกวน","var(--g7)","sec_stir",renderStir(rd));
+  h+=renderCollapsible("🔥","บอยเลอร์","#c0392b","sec_boil",renderBoil(rd));
+  h+=renderCollapsible("⚙️","โรงโม่","var(--gr7)","sec_mill",renderMill(rd));
+  h+=renderCollapsible("📦","โรงแพ็ค","var(--b6)","sec_pack",renderPack(rd));
+  h+=renderExtra(rd);
+
+  h+=`<div class="done-box ${rd.done?"complete":"pending"}">
+    <div class="done-head">
+      <span class="done-label">${rd.done?"✅ "+r.lb+" เสร็จสิ้น":"⏳ กำลังตรวจ "+r.lb}</span>
+      ${rd.done?`<div class="time-badge" style="background:var(--g2);color:var(--g8)">${rd.dt} น.</div>`:""}
+    </div>
+    ${!rd.done
+      ?`<button class="btn btn-primary" style="background:${r.cl}" onclick="markDone('${AR}')">🏁 ยืนยันจบ${r.lb}</button>`
+      :`<button class="btn btn-outline" onclick="doCopy('${AR}')">📋 Copy สรุปรอบนี้ → LINE</button>`
+    }
+  </div>`;
+
+  document.getElementById("roundForm").innerHTML=h;
+}
+
+function renderCollapsible(ic,title,cl,id,body){
+  return `<div class="section">
+    <div class="section-head" onclick="togSec('${id}')">
+      <div class="section-title" style="color:${cl}">${ic} ${title}</div>
+      <span class="section-arrow" id="${id}_arr">▼</span>
+    </div>
+    <div class="section-body hidden" id="${id}">${body}</div>
+  </div>`;
+}
+function togSec(id){
+  let body=document.getElementById(id);
+  let arr=document.getElementById(id+"_arr");
+  let hidden=body.classList.contains("hidden");
+  body.classList.toggle("hidden");
+  arr.classList.toggle("open",hidden);
+}
+
+/* ── LOT SECTION ── */
+function renderLots(r,rd){
+  let tot=0; RM.forEach(x=>tot+=ST.rounds[x.k].lots.length);
+  let h=`<div class="lot-summary">
+    <div><div class="lot-sub">LOT ชิมทั้งวัน</div><div style="font-size:15px;font-weight:700;color:var(--w)">🏷️ รวมทุกรอบ</div></div>
+    <div class="lot-summary-num">${tot}</div>
+  </div>`;
+
+  h+=`<div class="section" style="border-color:${r.cl}40;margin-bottom:10px">
+    <div class="section-head" style="background:${r.cl}10" onclick="togSec('sec_lots')">
+      <div class="section-title" style="color:${r.cl}">🏷️ LOT ในรอบนี้ <span style="font-size:11px;background:${r.cl};color:#fff;border-radius:100px;padding:1px 8px;margin-left:4px">${rd.lots.length}</span></div>
+      <span class="section-arrow" id="sec_lots_arr">▼</span>
+    </div>
+    <div class="section-body hidden" id="sec_lots">`;
+
+  if(rd.lots.length===0) h+=`<div style="text-align:center;color:var(--gr5);font-size:12px;padding:10px 0">ยังไม่มี LOT — กด ＋ เพิ่ม LOT ด้านล่าง</div>`;
+
+  rd.lots.forEach((l,i)=>{
+    let preview = l.bcode ? l.bcode+(l.boven||"1")+"-"+(l.bday||"?")+"-"+(l.bmonth||"?")+"-"+(l.byear||"?")+"-"+(l.btimes||"1") : (l.num||"— เลือกรหัสก่อน —");
+    let codeObj = LOT_CODES.find(c=>c.code===l.bcode);
+    let codeName = codeObj?codeObj.emoji+" "+codeObj.name:"";
+    let today=new Date();
+    let defDay=l.bday||pad(today.getDate());
+    let defMonth=l.bmonth||pad(today.getMonth()+1);
+    let defYear=l.byear||String(today.getFullYear()).slice(-2);
+
+    h+=`<div class="lot-item">
+      <div class="lot-item-head">
+        <span class="lot-item-num">LOT ${i+1}${l.num?' — <span style="font-family:var(--mono);color:var(--g7)">'+l.num+'</span>':''}</span>
+        <button class="btn-lot-del" onclick="delLot(${i})">🗑️ ลบ</button>
+      </div>
+      <div class="lot-builder">
+        <div class="lot-builder-title">🔧 สร้างเลข LOT อัตโนมัติ</div>
+        <div class="lot-builder-grid">
+          <div>
+            <div class="lot-sel-label">รหัส (สินค้า)</div>
+            <select class="lot-sel" id="lb_code_${i}" onchange="updateLotBuilder(${i})">
+              <option value="">— เลือกรหัส —</option>
+              ${LOT_CODES.map(c=>`<option value="${c.code}"${l.bcode===c.code?" selected":""}>${c.code} — ${c.emoji} ${c.name}</option>`).join("")}
+            </select>
+          </div>
+          <div><div class="lot-sel-label">เตาที่</div>
+            <select class="lot-sel" id="lb_oven_${i}" onchange="updateLotBuilder(${i})">
+              ${[1,2,3,4,5,6,7,8,9].map(v=>`<option value="${v}"${String(l.boven||"1")===String(v)?" selected":""}>${v}</option>`).join("")}
+            </select>
+          </div>
+          <div><div class="lot-sel-label">วันที่</div>
+            <select class="lot-sel" id="lb_day_${i}" onchange="updateLotBuilder(${i})">
+              ${Array.from({length:31},(_,d)=>{let v=pad(d+1);return `<option value="${v}"${defDay===v?" selected":""}>${d+1}</option>`;}).join("")}
+            </select>
+          </div>
+          <div><div class="lot-sel-label">เดือน</div>
+            <select class="lot-sel" id="lb_month_${i}" onchange="updateLotBuilder(${i})">
+              ${["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."].map((mn,mi)=>{let v=pad(mi+1);return `<option value="${v}"${defMonth===v?" selected":""}>${mn}</option>`;}).join("")}
+            </select>
+          </div>
+          <div><div class="lot-sel-label">ปี (2 หลัก)</div>
+            <select class="lot-sel" id="lb_year_${i}" onchange="updateLotBuilder(${i})">
+              ${(()=>{let base=new Date().getFullYear();return Array.from({length:4},(_,j)=>{let y=base-1+j;let v=String(y).slice(-2);return `<option value="${v}"${defYear===v?" selected":""}>${v}</option>`;}).join("");})()}
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:8px"><div class="lot-sel-label">ครั้งที่กวน</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            ${[1,2,3,4,5,6,7,8,9].map(t=>`<button class="cchip${String(l.btimes||"1")===String(t)?" ok":""}" onclick="ST.rounds['${AR}'].lots[${i}].btimes='${t}';updateLotBuilder(${i})">${t}</button>`).join("")}
+          </div>
+        </div>
+        <div class="lot-builder-result">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--gr5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">ตัวอย่างเลข LOT</div>
+            <div class="lot-builder-result-code" id="lb_preview_${i}">${preview}</div>
+            ${codeName?`<div style="font-size:11px;color:var(--g6);margin-top:2px">${codeName}</div>`:""}
+          </div>
+          <button class="btn-lot-apply" onclick="buildLotCode(${i})" ${l.bcode?"":"disabled style=\"opacity:.4\""}>ใช้เลขนี้ ✓</button>
+        </div>
+        <div><div class="lot-sel-label">หรือพิมพ์เลข LOT เองได้เลย</div>
+          <input type="text" class="inp" value="${l.num||""}" placeholder="เช่น B1-25-5-26-1" oninput="ST.rounds['${AR}'].lots[${i}].num=this.value;autosave()"/>
+        </div>
+      </div>
+      <div style="margin-top:10px;border-top:1px solid var(--gr1);padding-top:10px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gr5);margin-bottom:8px">เกณฑ์การประเมิน</div>
+        <div class="criteria-group"><div class="criteria-group-label">🍬 รสชาติ</div><div class="criteria-chips">
+          <button class="cchip${l.taste==="ok"?" ok":""}" onclick="setLotC(${i},'taste','ok')">เปรี้ยวอมหวาน / ปกติ</button>
+          <button class="cchip${l.taste==="ng"?" ng":""}" onclick="setLotC(${i},'taste','ng')">⚠️ ไม่ปกติ</button>
+        </div></div>
+        <div class="criteria-group"><div class="criteria-group-label">👃 กลิ่น</div><div class="criteria-chips">
+          <button class="cchip${l.smell==="ok"?" ok":""}" onclick="setLotC(${i},'smell','ok')">หอมปกติ</button>
+          <button class="cchip${l.smell==="ng"?" ng":""}" onclick="setLotC(${i},'smell','ng')">⚠️ ไม่ปกติ</button>
+        </div></div>
+        <div class="criteria-group"><div class="criteria-group-label">🎨 สี</div><div class="criteria-chips">
+          <button class="cchip${l.color==="ok"?" ok":""}" onclick="setLotC(${i},'color','ok')">ปกติ</button>
+          <button class="cchip${l.color==="dark"?" warn":""}" onclick="setLotC(${i},'color','dark')">🔵 เข้มเกิน</button>
+          <button class="cchip${l.color==="light"?" ng":""}" onclick="setLotC(${i},'color','light')">☀️ สว่างเกิน</button>
+        </div></div>
+        <div style="margin-top:8px"><label class="lbl">การแก้ไข / หมายเหตุ</label>
+          <input type="text" class="inp" value="${l.fix||""}" placeholder="-" oninput="ST.rounds['${AR}'].lots[${i}].fix=this.value;autosave()"/>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  h+=`<button class="btn-add-lot" style="border-color:${r.cl};color:${r.cl}" onclick="addLot()">＋ เพิ่ม LOT</button>`;
+  h+=`</div></div>`;
+  return h;
+}
+function addLot(){ ST.rounds[AR].lots.push(newLot()); autosave(); renderRoundForm(); }
+function delLot(i){ ST.rounds[AR].lots.splice(i,1); autosave(); renderRoundForm(); }
+function setLotC(i,f,v){ ST.rounds[AR].lots[i][f]=v; autosave(); renderRoundForm(); }
+function updateLotBuilder(i){
+  let l=ST.rounds[AR].lots[i];
+  ["code","oven","day","month","year"].forEach(f=>{
+    let el=document.getElementById("lb_"+f+"_"+i);
+    if(el){ if(f==="code") l.bcode=el.value; else l["b"+f]=el.value.trim(); }
+  });
+  autosave();
+  let pre=document.getElementById("lb_preview_"+i);
+  if(pre) pre.textContent=l.bcode?(l.bcode+(l.boven||"?")+"-"+(l.bday||"?")+"-"+(l.bmonth||"?")+"-"+(l.byear||"?")+"-"+(l.btimes||"?")):"— เลือกรหัสก่อน —";
+}
+function buildLotCode(i){
+  let l=ST.rounds[AR].lots[i];
+  if(!l.bcode) return;
+  ["oven","day","month","year"].forEach(f=>{
+    let el=document.getElementById("lb_"+f+"_"+i);
+    if(el) l["b"+f]=el.value.trim();
+  });
+  l.num=l.bcode+(l.boven||"1")+"-"+(l.bday||"1")+"-"+(l.bmonth||"1")+"-"+(l.byear||"26")+"-"+(l.btimes||"1");
+  autosave(); renderRoundForm();
+}
+
+/* ── BOILER ── */
+function renderBoil(rd){
+  let b=rd.boiler;
+  let rows=[{k:"temp",lb:"อุณหภูมิ (≤40°C)"},{k:"press",lb:"แรงดัน"},{k:"water",lb:"ระดับน้ำ 2 หลอด"},{k:"pump",lb:"น้ำยา / ปั๊มทำงาน"}];
+  let h="";
+  rows.forEach((row,i)=>{
+    h+=`<div class="field"><label class="lbl">${row.lb}</label>
+      <div class="chips">
+        <button class="chip${b[row.k]==="ok"?" ok":""}" onclick="setB('${row.k}','ok')">✅ ปกติ</button>
+        <button class="chip${b[row.k]==="warn"?" ng":""}" onclick="setB('${row.k}','warn')">⚠️ ไม่ปกติ</button>
+      </div>
+      ${b[row.k]==="warn"?`<div class="alert warn" style="margin-top:8px"><div class="alert-label">สาเหตุ / วิธีแก้ไข</div><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].boiler.notes['${row.k}']=this.value;autosave()">${b.notes[row.k]||""}</textarea></div>`:""}
+    </div>${i<rows.length-1?'<div class="div"></div>':""}`;
+  });
+  h+=`<div class="div"></div><div class="field"><label class="lbl">ควัน</label>
+    <div class="chips">
+      <button class="chip${b.smoke==="none"?" ok":""}" onclick="setB('smoke','none')">✅ ไม่ดำ</button>
+      <button class="chip${b.smoke==="black"?" ng":""}" onclick="setB('smoke','black')">🟫 ดำ</button>
+    </div>
+    ${b.smoke==="black"?`<div class="alert warn" style="margin-top:8px"><div class="alert-label">สาเหตุ / วิธีแก้ไข</div><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].boiler.notes.smoke=this.value;autosave()">${b.notes.smoke||""}</textarea></div>`:""}
+  </div>`;
+  let allOk=["temp","press","water","pump"].every(k=>b[k]==="ok")&&b.smoke==="none";
+  if(allOk) h+=`<div class="alert ok" style="text-align:center">✅ บอยเลอร์ทำงานปกติทุกรายการ</div>`;
+  return h;
+}
+function setB(k,v){ ST.rounds[AR].boiler[k]=v; autosave(); document.getElementById("sec_boil").innerHTML=renderBoil(ST.rounds[AR]); }
+
+/* ── STIR ── */
+function renderStir(rd){
+  let st=rd.stir;
+  let inact=[1,2,3,4,5,6,7,8,9].filter(n=>st.am.indexOf(n)<0);
+  let h=`<div class="field"><label class="lbl">เครื่องกวนที่ใช้งาน (1-9)</label>
+    <div class="num-grid">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="num-btn${st.am.indexOf(n)>=0?" on":""}" onclick="togSM(${n})">${n}</button>`).join("")}</div>
+    ${st.am.length>0?`<div class="alert ok" style="margin-top:8px">✅ เครื่องที่ใช้งาน: ${[...st.am].sort((a,b)=>a-b).join(", ")} ทำงานปกติ</div>`:""}
+  </div>`;
+  if(inact.length>0){
+    h+=`<div class="div"></div><label class="lbl" style="display:block;margin-bottom:6px">เครื่องที่ไม่ได้ใช้ — ระบุสาเหตุ</label>`;
+    inact.forEach(n=>{
+      h+=`<div class="machine-card"><div class="machine-card-title">เครื่อง ${n}</div>
+        <div class="chips" style="margin-bottom:7px">
+          <button class="chip${st.ist[n]==="idle"?" gray":""}" onclick="setIna(${n},'idle')">ไม่ได้ใช้</button>
+          <button class="chip${st.ist[n]==="broken"?" ng":""}" onclick="setIna(${n},'broken')">⚠️ เสีย</button>
+        </div>
+        <input type="text" class="inp" value="${st.ino[n]||""}" placeholder="หมายเหตุ..." oninput="ST.rounds['${AR}'].stir.ino[${n}]=this.value;autosave()"/>
+      </div>`;
+    });
+  }
+  h+=`<div class="div"></div><div class="field"><label class="lbl">เครื่องอบ</label>
+    <div class="chips">
+      <button class="chip${st.ou==="yes"?" ok":""}" onclick="setSt('ou','yes')">✅ ใช้งาน</button>
+      <button class="chip${st.ou==="no"?" gray":""}" onclick="setSt('ou','no')">⬜ ไม่ได้ใช้</button>
+    </div>
+    ${st.ou==="yes"?`<div class="chips" style="margin-top:7px">
+      <button class="chip${st.ook==="ok"?" ok":""}" onclick="setSt('ook','ok')">✅ ปกติ</button>
+      <button class="chip${st.ook==="warn"?" ng":""}" onclick="setSt('ook','warn')">⚠️ ไม่ปกติ</button>
+    </div>${st.ook==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].stir.on2=this.value;autosave()">${st.on2||""}</textarea></div>`:""}`:""}</div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">ปริมาณแบะแซและน้ำตาล</label>
+    <div class="chips">
+      <button class="chip${st.sy==="ok"?" ok":""}" onclick="setSt('sy','ok')">✅ พอดีตามสัดส่วน</button>
+      <button class="chip${st.sy==="warn"?" ng":""}" onclick="setSt('sy','warn')">⚠️ ไม่พอดี</button>
+    </div>
+    <div style="margin-top:8px"><label class="lbl">Comment</label><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].stir.syn=this.value;autosave()">${st.syn||""}</textarea></div>
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">โทนสีขณะกวน</label>
+    <div class="chips">
+      <button class="chip${st.col==="ok"?" ok":""}" onclick="setSt('col','ok')">✅ ปกติ</button>
+      <button class="chip${st.col==="dark"?" blue":""}" onclick="setSt('col','dark')">🔵 เข้มเกิน</button>
+      <button class="chip${st.col==="light"?" warn":""}" onclick="setSt('col','light')">☀️ สว่างเกิน</button>
+    </div>
+    <div class="alert note" style="margin-top:8px"><div class="alert-label">กรณีสีผิดปกติ — แนวทางแก้ไข</div>
+      <textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].stir.coln=this.value;autosave()">${st.coln||""}</textarea>
+    </div>
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">รสชาติ</label>
+    <div class="chips">
+      <button class="chip${st.fl==="ok"?" ok":""}" onclick="setSt('fl','ok')">✅ เปรี้ยวอมหวาน / ปกติ</button>
+      <button class="chip${st.fl==="warn"?" ng":""}" onclick="setSt('fl','warn')">⚠️ ไม่ปกติ</button>
+    </div>
+    ${st.fl==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].stir.fln=this.value;autosave()">${st.fln||""}</textarea></div>`:""}
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">การลงเอกสาร</label>
+    <div class="chips">
+      <button class="chip${st.dr==="ok"?" ok":""}" onclick="setSt('dr','ok')">✅ ครบถ้วน</button>
+      <button class="chip${st.dr==="warn"?" ng":""}" onclick="setSt('dr','warn')">⚠️ ไม่ครบ</button>
+    </div>
+    ${st.dr==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].stir.dn=this.value;autosave()">${st.dn||""}</textarea></div>`:""}
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">คะแนนความสะอาด (1-10)</label>
+    <div class="score-row">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="score-btn${st.cs===String(n)?" on":""}" onclick="setSt('cs','${n}')">${n}</button>`).join("")}</div>
+    <div style="margin-top:8px"><label class="lbl">Comment</label>
+      <input type="text" class="inp" value="${st.cn||""}" oninput="ST.rounds['${AR}'].stir.cn=this.value;autosave()"/>
+    </div>
+  </div>`;
+  return h;
+}
+function togSM(n){ let st=ST.rounds[AR].stir; let i=st.am.indexOf(n); if(i>=0){st.am.splice(i,1);st.ist[n]="idle";}else{st.am.push(n);delete st.ist[n];delete st.ino[n];} autosave(); document.getElementById("sec_stir").innerHTML=renderStir(ST.rounds[AR]); }
+function setIna(n,v){ ST.rounds[AR].stir.ist[n]=v; autosave(); document.getElementById("sec_stir").innerHTML=renderStir(ST.rounds[AR]); }
+function setSt(k,v){ ST.rounds[AR].stir[k]=v; autosave(); document.getElementById("sec_stir").innerHTML=renderStir(ST.rounds[AR]); }
+
+/* ── MILL ── */
+function renderMill(rd){
+  let ml=rd.mill;
+  let inactMill=[1,2,3].filter(n=>ml.mc.indexOf(n)<0);
+  if(!ml.rmCheck) ml.rmCheck={};
+  if(!ml.mist) ml.mist={};
+  if(!ml.mino) ml.mino={};
+  let h=`<div class="field"><label class="lbl">เครื่องโม่ที่ใช้งาน (1-3)</label>
+    <div class="chips">${[1,2,3].map(n=>`<button class="chip${ml.mc.indexOf(n)>=0?" ok":""}" onclick="togMM(${n})">เครื่อง ${n}</button>`).join("")}</div>
+  </div>`;
+  ml.mc.forEach(n=>{
+    h+=`<div class="machine-card"><div class="machine-card-title">เครื่อง ${n} — ความละเอียด</div>
+      <div class="chips">
+        <button class="chip${ml.fs[n]==="ok"?" ok":""}" onclick="setMF(${n},'ok')">✅ ละเอียด</button>
+        <button class="chip${ml.fs[n]==="warn"?" ng":""}" onclick="setMF(${n},'warn')">⚠️ ไม่ละเอียด</button>
+      </div>
+      ${ml.fs[n]==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].mill.fn[${n}]=this.value;autosave()">${ml.fn[n]||""}</textarea></div>`:""}
+    </div>`;
+  });
+  if(inactMill.length>0){
+    h+=`<div class="div"></div><label class="lbl" style="display:block;margin-bottom:6px">เครื่องที่ไม่ได้ใช้</label>`;
+    inactMill.forEach(n=>{
+      h+=`<div class="machine-card"><div class="machine-card-title">เครื่อง ${n}</div>
+        <div class="chips" style="margin-bottom:7px">
+          <button class="chip${ml.mist[n]==="idle"?" gray":""}" onclick="setMIna(${n},'idle')">ไม่ได้ใช้</button>
+          <button class="chip${ml.mist[n]==="broken"?" ng":""}" onclick="setMIna(${n},'broken')">⚠️ เสีย</button>
+        </div>
+        ${ml.mist[n]==="broken"?`<textarea class="ta" rows="2" placeholder="สาเหตุ..." oninput="ST.rounds['${AR}'].mill.mino[${n}]=this.value;autosave()">${ml.mino[n]||""}</textarea>`:""}
+      </div>`;
+    });
+  }
+  h+=`<div class="div"></div><div class="field"><label class="lbl">ตรวจวัตถุดิบเสร็จแล้วคันที่ (1-20)</label>
+    <div class="num-grid">${Array.from({length:20},(_,i)=>i+1).map(n=>`<button class="num-btn sm${ml.vh.indexOf(n)>=0?" on":""}" onclick="togV(${n})">${n}</button>`).join("")}</div>
+    ${ml.vh.length>0?`<div style="margin-top:8px"><label class="lbl">พบสิ่งปนเปื้อนในรถคันที่</label><div class="chips">
+      ${ml.vh.map(n=>`<button class="chip${ml.ci===n?" ng":""}" onclick="setCI(${n})">คันที่ ${n}</button>`).join("")}
+      <button class="chip${ml.ci===0?" ok":""}" onclick="setCI(0)">✅ ไม่มีสิ่งปนเปื้อน</button>
+    </div>${ml.ci&&ml.ci!==0?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].mill.cn2=this.value;autosave()">${ml.cn2||""}</textarea></div>`:""}</div>`:""}
+  </div>`;
+  // Raw materials
+  h+=`<div class="div"></div><label class="lbl" style="display:block;margin-bottom:8px">ตรวจวัตถุดิบรอส่งไปแผนกโม่</label>`;
+  [{k:"pineapple",lb:"🍍 สับปะรดสด หัว/แกน"},{k:"papaya",lb:"🫒 มะละกอ"},{k:"dry",lb:"📦 ของแห้ง"},{k:"other",lb:"🔹 อื่นๆ"}].forEach(t=>{
+    let ck=ml.rmCheck[t.k]||{};
+    h+=`<div class="machine-card">
+      <div class="chips" style="margin-bottom:8px"><button class="chip${ck.sel?" ok":""}" onclick="togRM('${t.k}')">${t.lb}</button></div>
+      ${ck.sel?`
+        ${(t.k==="dry"||t.k==="other")?`<div style="margin-bottom:8px"><input type="text" class="inp" value="${ck.detail||""}" placeholder="${t.k==="dry"?"ระบุว่าคืออะไร...":"แจ้งมาว่าคืออะไร..."}" oninput="setRMDetail('${t.k}',this.value)"/></div>`:""}
+        <div class="chips">
+          <button class="chip${ck.contam==="found"?" ng":""}" onclick="setRMC('${t.k}','found')">⚠️ พบสิ่งปนเปื้อน</button>
+          <button class="chip${ck.contam==="none"?" ok":""}" onclick="setRMC('${t.k}','none')">✅ ไม่พบ</button>
+        </div>
+        ${ck.contam==="found"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="setRMNote('${t.k}',this.value)">${ck.note||""}</textarea></div>`:""}
+      `:""}
+    </div>`;
+  });
+  h+=`<div class="div"></div><div class="field"><label class="lbl">การปิดคลุมผ้าหลังโม่เสร็จ</label>
+    <div class="chips">
+      <button class="chip${ml.cv==="ok"?" ok":""}" onclick="setML('cv','ok')">✅ มิดชิดเรียบร้อย</button>
+      <button class="chip${ml.cv==="warn"?" ng":""}" onclick="setML('cv','warn')">⚠️ ไม่มิดชิด</button>
+    </div>
+    ${ml.cv==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].mill.cvn=this.value;autosave()">${ml.cvn||""}</textarea></div>`:""}
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">การลงเอกสาร</label>
+    <div class="chips">
+      <button class="chip${ml.dr==="ok"?" ok":""}" onclick="setML('dr','ok')">✅ ครบถ้วน</button>
+      <button class="chip${ml.dr==="warn"?" ng":""}" onclick="setML('dr','warn')">⚠️ ไม่ครบ</button>
+    </div>
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">คะแนนความสะอาด (1-10)</label>
+    <div class="score-row">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="score-btn${ml.cs===String(n)?" on":""}" onclick="setML('cs','${n}')">${n}</button>`).join("")}</div>
+    <div style="margin-top:8px"><label class="lbl">Comment</label>
+      <input type="text" class="inp" value="${ml.cn3||""}" oninput="ST.rounds['${AR}'].mill.cn3=this.value;autosave()"/>
+    </div>
+  </div>`;
+  return h;
+}
+function togMM(n){ let ml=ST.rounds[AR].mill; let i=ml.mc.indexOf(n); if(i>=0){ml.mc.splice(i,1);delete ml.fs[n];}else{ml.mc.push(n);delete ml.mist[n];} autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function setMIna(n,v){ let ml=ST.rounds[AR].mill; if(!ml.mist)ml.mist={}; ml.mist[n]=v; autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function setMF(n,v){ ST.rounds[AR].mill.fs[n]=v; autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function togV(n){ let ml=ST.rounds[AR].mill; let i=ml.vh.indexOf(n); if(i>=0)ml.vh.splice(i,1);else ml.vh.push(n); autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function setCI(n){ ST.rounds[AR].mill.ci=n; autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function setML(k,v){ ST.rounds[AR].mill[k]=v; autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function togRM(k){ let ml=ST.rounds[AR].mill; if(!ml.rmCheck)ml.rmCheck={}; if(!ml.rmCheck[k])ml.rmCheck[k]={}; ml.rmCheck[k].sel=!ml.rmCheck[k].sel; autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function setRMDetail(k,v){ let ml=ST.rounds[AR].mill; if(!ml.rmCheck[k])ml.rmCheck[k]={}; ml.rmCheck[k].detail=v; autosave(); }
+function setRMC(k,v){ let ml=ST.rounds[AR].mill; if(!ml.rmCheck[k])ml.rmCheck[k]={}; ml.rmCheck[k].contam=v; autosave(); document.getElementById("sec_mill").innerHTML=renderMill(ST.rounds[AR]); }
+function setRMNote(k,v){ let ml=ST.rounds[AR].mill; if(!ml.rmCheck[k])ml.rmCheck[k]={}; ml.rmCheck[k].note=v; autosave(); }
+
+/* ── PACK ── */
+function renderPack(rd){
+  let pk=rd.pack;
+  let ms=[{k:"st",lb:"🏷️ เครื่องติดสติกเกอร์"},{k:"se",lb:"🔒 เครื่องซีล"},{k:"sr",lb:"📦 เครื่องรัดกล่อง"}];
+  let h="";
+  ms.forEach((m,i)=>{
+    h+=`<div class="field"><label class="lbl">${m.lb}</label>
+      <div class="chips">
+        <button class="chip${pk[m.k]==="ok"?" ok":""}" onclick="setPK('${m.k}','ok')">✅ ปกติ</button>
+        <button class="chip${pk[m.k]==="warn"?" ng":""}" onclick="setPK('${m.k}','warn')">⚠️ ไม่ปกติ</button>
+      </div>
+      ${pk[m.k]==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].pack['${m.k}n']=this.value;autosave()">${pk[m.k+"n"]||""}</textarea></div>`:""}
+    </div>${i<ms.length-1?'<div class="div"></div>':""}`;
+  });
+  h+=`<div class="div"></div><div class="field"><label class="lbl">📅 การปั๊มวันหมดอายุ</label>
+    <div class="chips">
+      <button class="chip${pk.ex==="ok"?" ok":""}" onclick="setPK('ex','ok')">✅ ถูกต้อง</button>
+      <button class="chip${pk.ex==="warn"?" ng":""}" onclick="setPK('ex','warn')">⚠️ ไม่ถูกต้อง</button>
+    </div>
+    <div class="alert note" style="margin-top:8px"><div class="alert-label">กรณีสั่งแก้แล้ว — ระบุรายละเอียด</div>
+      <textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].pack.exn=this.value;autosave()">${pk.exn||""}</textarea>
+    </div>
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">⚖️ สุ่มชั่งน้ำหนัก</label>
+    <div class="chips">
+      <button class="chip${pk.wt==="ok"?" ok":""}" onclick="setPK('wt','ok')">✅ ตามเกณฑ์</button>
+      <button class="chip${pk.wt==="warn"?" ng":""}" onclick="setPK('wt','warn')">⚠️ ไม่ตามเกณฑ์</button>
+    </div>
+    ${pk.wt==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].pack.wtn=this.value;autosave()">${pk.wtn||""}</textarea></div>`:""}
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">🔒 รอยซีล</label>
+    <div class="chips">
+      <button class="chip${pk.sl==="ok"?" ok":""}" onclick="setPK('sl','ok')">✅ ตามเกณฑ์</button>
+      <button class="chip${pk.sl==="warn"?" ng":""}" onclick="setPK('sl','warn')">⚠️ ไม่ตามเกณฑ์</button>
+    </div>
+    ${pk.sl==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].pack.sln=this.value;autosave()">${pk.sln||""}</textarea></div>`:""}
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">📦 บรรจุภัณฑ์</label>
+    <div class="chips">
+      <button class="chip${pk.pkg==="ok"?" ok":""}" onclick="setPK('pkg','ok')">✅ ตามเกณฑ์</button>
+      <button class="chip${pk.pkg==="warn"?" ng":""}" onclick="setPK('pkg','warn')">⚠️ ไม่ตามเกณฑ์</button>
+    </div>
+    ${pk.pkg==="warn"?`<div class="alert warn" style="margin-top:8px"><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].pack.pkgn=this.value;autosave()">${pk.pkgn||""}</textarea></div>`:""}
+  </div>`;
+  let hasIssue=pk.st==="warn"||pk.se==="warn"||pk.sr==="warn"||pk.ex==="warn";
+  h+=`<div class="div"></div><div class="field"><label class="lbl">🔧 การแจ้งซ่อม (Maintenance)</label>
+    ${hasIssue?`<div class="chips">
+      <button class="chip${pk.mt===true?" ng":""}" onclick="setPK('mt',true)">⚠️ ต้องแจ้งซ่อม</button>
+      <button class="chip${pk.mt===false?" ok":""}" onclick="setPK('mt',false)">✅ ไม่ต้องแจ้ง</button>
+    </div>
+    ${pk.mt===true?`<div class="alert warn" style="margin-top:8px"><div class="alert-label">รายละเอียดที่ต้องแจ้งช่าง</div><textarea class="ta" rows="2" oninput="ST.rounds['${AR}'].pack.mn=this.value;autosave()">${pk.mn||""}</textarea></div>`:""}
+    `:`<div class="alert ok">ระบบทำงานปกติ — ไม่จำเป็นต้องแจ้งซ่อม</div>`}
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">การลงเอกสาร</label>
+    <div class="chips">
+      <button class="chip${pk.dr==="ok"?" ok":""}" onclick="setPK('dr','ok')">✅ ครบถ้วน</button>
+      <button class="chip${pk.dr==="warn"?" ng":""}" onclick="setPK('dr','warn')">⚠️ ไม่ครบ</button>
+    </div>
+  </div>`;
+  h+=`<div class="div"></div><div class="field"><label class="lbl">คะแนนความสะอาด (1-10)</label>
+    <div class="score-row">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="score-btn${pk.cs===String(n)?" on":""}" onclick="setPK('cs','${n}')">${n}</button>`).join("")}</div>
+    <div style="margin-top:8px"><label class="lbl">Comment</label>
+      <input type="text" class="inp" value="${pk.cn||""}" oninput="ST.rounds['${AR}'].pack.cn=this.value;autosave()"/>
+    </div>
+  </div>`;
+  h+=`<div class="div"></div>${pk.ct
+    ?`<div class="alert ok" style="display:flex;justify-content:space-between;align-items:center"><span>✅ จบการตรวจโรงแพ็คแล้ว</span><span style="font-family:var(--mono)">${pk.ct} น.</span></div>`
+    :`<button class="btn btn-dark" onclick="finPack()">🏁 จบการตรวจโรงแพ็ค — บันทึกเวลา</button>`}`;
+  return h;
+}
+function setPK(k,v){
+  ST.rounds[AR].pack[k]=v;
+  let p=ST.rounds[AR].pack;
+  let hasIssue=p.st==="warn"||p.se==="warn"||p.sr==="warn"||p.ex==="warn";
+  if(!hasIssue){p.mt=null;p.mn="";}
+  autosave(); document.getElementById("sec_pack").innerHTML=renderPack(ST.rounds[AR]);
+}
+function finPack(){ ST.rounds[AR].pack.ct=now(); autosave(); document.getElementById("sec_pack").innerHTML=renderPack(ST.rounds[AR]); }
+
+/* ── EXTRA ── */
+function renderExtra(rd){
+  let ed=rd.ed||{};
+  let opts=[
+    {k:"stock_finish",lb:"📦 รับเข้า-จำหน่ายออกสินค้าสำเร็จรูป"},
+    {k:"stock_raw",lb:"🧪 รับเข้า-จำหน่ายวัตถุดิบ / ส่วนผสม / บรรจุภัณฑ์ / เคมีภัณฑ์"},
+    {k:"sys_doc",lb:"📝 เอกสารระบบ"}
+  ];
+  let h=`<div class="extra-section"><div class="extra-head"><span class="extra-title">📋 งานเอกสารเพิ่มเติม</span>
+    <button type="button" class="btn-sm" onclick="stampExtraTime()">⏱️ บันทึกเวลา</button>
+  </div><div class="extra-body">`;
+  opts.forEach(o=>{
+    let checked=(ed.checks||[]).indexOf(o.k)>=0;
+    h+=`<label class="checkbox-row${checked?" checked":""}">
+      <input type="checkbox" ${checked?"checked":""} onchange="togEdCheck('${o.k}',this.checked)"/>
+      <span class="checkbox-lbl">${o.lb}</span>
+    </label>`;
+  });
+  h+=`<div class="field" style="margin-top:10px"><label class="lbl">รายละเอียดเอกสาร / งานที่ทำ</label>
+    <textarea class="ta" rows="2" placeholder="ระบุชื่อเอกสาร รายละเอียด หรืองานที่ทำ..." oninput="setEdDetail(this.value)">${ed.docDetail||""}</textarea>
+  </div>
+  ${ed.timestamp?`<div class="alert ok" style="margin-top:10px">⏱️ เวลาบันทึก: ${ed.timestamp}</div>`:""}
+  </div></div>`;
+  return h;
+}
+function stampExtraTime(){ let rd=ST.rounds[AR]; if(!rd.ed||typeof rd.ed!=="object")rd.ed={checks:[],docDetail:"",images:[],timestamp:""}; rd.ed.timestamp=now()+" น."; autosave(); renderRoundForm(); }
+function togEdCheck(k,c){ let rd=ST.rounds[AR]; if(!rd.ed)rd.ed={checks:[],docDetail:"",images:[],timestamp:""}; if(!rd.ed.checks)rd.ed.checks=[]; let i=rd.ed.checks.indexOf(k); if(c&&i<0)rd.ed.checks.push(k); else if(!c&&i>=0)rd.ed.checks.splice(i,1); autosave(); renderRoundForm(); }
+function setEdDetail(v){ let rd=ST.rounds[AR]; if(!rd.ed)rd.ed={checks:[],docDetail:"",images:[],timestamp:""}; rd.ed.docDetail=v; autosave(); }
+
+/* ── PRE-CHECK ── */
+function setPc(v){
+  ST.pc=v;
+  document.getElementById("pc_yes").className="chip"+(v==="yes"?" ok":"");
+  document.getElementById("pc_no").className="chip"+(v==="no"?" ng":"");
+  if(v==="yes"&&!ST.pct){ ST.pct=now(); let el=document.getElementById("pc_time"); el.style.display="block"; el.innerHTML=`<div class="alert ok">🕐 บันทึกเวลา: ${ST.pct} น.</div>`; }
+  autosave();
+}
+
+/* ── MARK DONE ── */
+function markDone(k){
+  ST.rounds[k].done=true;
+  ST.rounds[k].dt=now();
+  autosave();
+  renderRoundGrid();
+  renderRoundForm();
+  toast("✅ บันทึก"+RM.find(r=>r.k===k).lb+" เรียบร้อย");
+}
+
+/* ═══════════════════════════════════════════════════
+   SUPABASE SAVE
+═══════════════════════════════════════════════════ */
+function lotSummary(l){
+  let parts=[];
+  if(l.taste==="ok") parts.push("รสชาติ: ปกติ");
+  else if(l.taste==="ng") parts.push("รสชาติ: ไม่ปกติ");
+  if(l.smell==="ok") parts.push("กลิ่น: ปกติ");
+  else if(l.smell==="ng") parts.push("กลิ่น: ไม่ปกติ");
+  if(l.color==="ok") parts.push("สี: ปกติ");
+  else if(l.color==="dark") parts.push("สี: เข้มเกิน");
+  else if(l.color==="light") parts.push("สี: สว่างเกิน");
+  return parts.join(" | ");
+}
+
+function rmSummary(rmCheck,key){
+  if(!rmCheck) return "-";
+  let ck=rmCheck[key]||{};
+  if(!ck.sel) return "-";
+  let base=ck.contam==="found"?"พบสิ่งปนเปื้อน":"ไม่พบสิ่งปนเปื้อน";
+  if(ck.detail) base+=" / "+ck.detail;
+  if(ck.note) base+=" ("+ck.note+")";
+  return base;
+}
+
+async function doSave(){
+  syncFieldsToState();
+  let doneRounds = RM.filter(r=>ST.rounds[r.k].done);
+  if(doneRounds.length===0){
+    toast("⚠️ ยังไม่มีรอบที่กด 'ยืนยันจบ' — กด 🏁 ก่อนบันทึก");
+    return;
+  }
+  if(!_isOnline){
+    toast("📵 ออฟไลน์ — ข้อมูลบันทึกในเครื่องแล้ว");
+    return;
+  }
+  setSyncBanner("syncing","⏳ กำลังบันทึกลง Supabase...");
+  let errors = [];
+  for(let r of doneRounds){
+    let rd=ST.rounds[r.k];
+    let b=rd.boiler||{};
+    let st=rd.stir||{};
+    let ml=rd.mill||{};
+    let pk=rd.pack||{};
+    let ed=rd.ed||{};
+    let rmCheck=ml.rmCheck||{};
+    let bOk=["temp","press","water","pump"].every(k=>b[k]==="ok")&&b.smoke==="none";
+    let millParts=[];
+    (ml.mc||[]).forEach(n=>millParts.push("เครื่อง"+n+":"+(ml.fs&&ml.fs[n]==="ok"?"ละเอียด":"ไม่ละเอียด")));
+    [1,2,3].filter(n=>(ml.mc||[]).indexOf(n)<0).forEach(n=>{
+      let s=ml.mist&&ml.mist[n]==="broken"?"เสีย":"ไม่ได้ใช้";
+      let note=ml.mino&&ml.mino[n]?"("+ml.mino[n]+")":"";
+      millParts.push("เครื่อง"+n+":"+s+note);
+    });
+    let hasIssue=pk.st==="warn"||pk.se==="warn"||pk.sr==="warn"||pk.ex==="warn";
+    let edLabels={stock_finish:"รับเข้า-จำหน่ายออกสินค้าสำเร็จรูป",stock_raw:"รับเข้า-จำหน่ายวัตถุดิบฯ",sys_doc:"เอกสารระบบ"};
+    let edText=(ed.checks||[]).map(k=>edLabels[k]||k).join(", ")||"-";
+    let lots=(rd.lots||[]).filter(l=>l.num).map(l=>{let c=lotSummary(l);return l.num+(c?" ("+c+")":"")+(l.fix&&l.fix!=="-"?" [แก้: "+l.fix+"]":"");}).join(", ")||"-";
+    let RL={m1:"รอบ1เช้า",m2:"รอบ2เช้า",m3:"รอบ3เช้า",a1:"รอบ1บ่าย",a2:"รอบ2บ่าย",a3:"รอบ3เย็น"};
+    let payload = {
+      วันที่บันทึก: new Date().toISOString(),
+      วันที่: ST.date,
+      ผู้รายงาน: ST.rep,
+      รอบ: RL[r.k]||r.k,
+      เวลาจบ: rd.dt||"-",
+      LOT: lots,
+      บอยเลอร์: bOk?"ปกติ":"มีปัญหา",
+      "กวน-เครื่อง": (st.am||[]).join(", ")||"-",
+      "กวน-แบะแซ": st.sy==="ok"?"พอดีตามสัดส่วน":st.sy==="warn"?"ไม่พอดี":"-",
+      "กวน-สี": st.col==="ok"||!st.col?"ปกติ":st.col==="dark"?"เข้ม":"สว่าง",
+      "กวน-รส": st.fl==="ok"?"เปรี้ยวอมหวาน/ปกติ":st.fl==="warn"?"ไม่ปกติ"+(st.fln?" / "+st.fln:""):"-",
+      "กวน-คะแนน": st.cs||"-",
+      "โม่-เครื่องและการใช้งาน": millParts.join(", ")||"-",
+      "โม่-คลุม": ml.cv==="ok"?"มิดชิดเรียบร้อย":ml.cv==="warn"?"ไม่มิดชิด":"-",
+      "โม่-คะแนน": ml.cs||"-",
+      "ตรวจวัตถุดิบเสร็จแล้วคันที่": (ml.vh||[]).join(",")||"-",
+      "รอส่งโม่-สับปะรดสด": rmSummary(rmCheck,"pineapple"),
+      "รอส่งโม่-มะละกอ": rmSummary(rmCheck,"papaya"),
+      "รอส่งโม่-ของแห้ง": rmSummary(rmCheck,"dry"),
+      "รอส่งโม่-อื่นๆ": rmSummary(rmCheck,"other"),
+      "แพ็ค-เครื่อง": [pk.st,pk.se,pk.sr].map((v,i)=>v==="ok"?["สติกเกอร์","ซีล","รัดกล่อง"][i]:null).filter(Boolean).join(", ")||"-",
+      "แพ็ค-Maint": pk.mt===true?"แจ้งซ่อม"+(pk.mn?" : "+pk.mn:""):"-",
+      "แพ็ค-คะแนน": pk.cs||"-",
+      "แพ็ค-ปั๊มวันหมดอายุ": pk.ex==="ok"?"ถูกต้อง":pk.ex==="warn"?"ไม่ถูกต้อง":"-",
+      "แพ็ค-สุ่มชั่งน้ำหนัก": pk.wt==="ok"?"ตามเกณฑ์":pk.wt==="warn"?"ไม่ตามเกณฑ์"+(pk.wtn?" / "+pk.wtn:""):"-",
+      "แพ็ค-รอยซีล": pk.sl==="ok"?"ตามเกณฑ์":pk.sl==="warn"?"ไม่ตามเกณฑ์":"-",
+      "แพ็ค-บรรจุภัณฑ์": pk.pkg==="ok"?"ตามเกณฑ์":pk.pkg==="warn"?"ไม่ตามเกณฑ์":"-",
+      เพิ่มเติม: edText+(ed.docDetail?" / "+ed.docDetail:"")+(ed.timestamp?" ["+ed.timestamp+"]":""),
+    };
+    try {
+      let res = await fetch(SUPABASE_URL+TABLE, {
+        method:"POST",
+        headers: SUPABASE_HEADERS,
+        body: JSON.stringify(payload)
+      });
+      if(!res.ok){
+        let err = await res.text();
+        errors.push(r.lb+": "+err);
+      }
+    } catch(e){
+      errors.push(r.lb+": "+e.message);
+    }
+  }
+  if(errors.length===0){
+    setSyncBanner("saved","✅ บันทึกลง Supabase เรียบร้อยแล้ว!");
+    toast("✅ บันทึกสำเร็จ "+doneRounds.length+" รอบ");
+    // Clear draft after successful save
+    setTimeout(()=>{ document.getElementById("syncBanner").classList.add("hidden"); },4000);
+  } else {
+    setSyncBanner("offline","❌ บันทึกไม่สำเร็จ: "+errors[0]);
+    toast("❌ เกิดข้อผิดพลาด — ข้อมูลยังอยู่ในเครื่อง");
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   COPY TO LINE — ครบทุกหัวข้อ
+═══════════════════════════════════════════════════ */
+function buildFullReport(k){
+  // returns full text string for one round
+  let r=RM.find(x=>x.k===k); let rd=ST.rounds[k];
+  let st=rd.stir||{}; let ml=rd.mill||{}; let pk=rd.pack||{}; let b=rd.boiler||{}; let ed=rd.ed||{};
+  let rmCheck=ml.rmCheck||{}; let mist=ml.mist||{}; let mino=ml.mino||{};
+
+  // LOTs
+  let lotLines=(rd.lots||[]).filter(l=>l.num).map((l,i)=>{
+    let c=lotSummary(l);
+    return "  "+(i+1)+". "+l.num+(c?" ("+c+")":"")+(l.fix&&l.fix!=="-"?" [แก้ไข: "+l.fix+"]":"");
+  });
+
+  // บอยเลอร์
+  let bOk=["temp","press","water","pump"].every(x=>b[x]==="ok")&&b.smoke==="none";
+  let bLines=[];
+  bLines.push("   อุณหภูมิ: "+(b.temp==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(b.notes&&b.notes.temp?" — "+b.notes.temp:"")));
+  bLines.push("   แรงดัน: "+(b.press==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(b.notes&&b.notes.press?" — "+b.notes.press:"")));
+  bLines.push("   ระดับน้ำ 2 หลอด: "+(b.water==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(b.notes&&b.notes.water?" — "+b.notes.water:"")));
+  bLines.push("   น้ำยา/ปั๊ม: "+(b.pump==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(b.notes&&b.notes.pump?" — "+b.notes.pump:"")));
+  bLines.push("   ควัน: "+(b.smoke==="none"?"✅ ไม่ดำ":b.smoke==="black"?"⚠️ ดำ"+(b.notes&&b.notes.smoke?" — "+b.notes.smoke:""):"-"));
+
+  // โรงกวน
+  let mcActive=[...st.am||[]].sort((a,b)=>a-b).join(", ")||"-";
+  let inactStir=[1,2,3,4,5,6,7,8,9].filter(n=>!(st.am||[]).includes(n));
+  let stirLines=[];
+  stirLines.push("   เครื่องกวนที่ใช้: "+mcActive);
+  if(inactStir.length>0){
+    inactStir.forEach(n=>{
+      let s=st.ist&&st.ist[n]==="broken"?"⚠️ เสีย":"ไม่ได้ใช้";
+      let note=st.ino&&st.ino[n]?" ("+st.ino[n]+")":"";
+      stirLines.push("   เครื่อง "+n+": "+s+note);
+    });
+  }
+  stirLines.push("   เครื่องอบ: "+(st.ou==="yes"?"ใช้งาน — "+(st.ook==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(st.on2?" / "+st.on2:"")):st.ou==="no"?"ไม่ได้ใช้":"-"));
+  stirLines.push("   แบะแซ/น้ำตาล: "+(st.sy==="ok"?"✅ พอดีตามสัดส่วน":"⚠️ ไม่พอดี")+(st.syn?" — "+st.syn:""));
+  stirLines.push("   โทนสี: "+(st.col==="ok"?"✅ ปกติ":st.col==="dark"?"🔵 เข้มเกิน":st.col==="light"?"☀️ สว่างเกิน":"-")+(st.coln?" / "+st.coln:""));
+  stirLines.push("   รสชาติ: "+(st.fl==="ok"?"✅ เปรี้ยวอมหวาน/ปกติ":st.fl==="warn"?"⚠️ ไม่ปกติ"+(st.fln?" / "+st.fln:""):"-"));
+  stirLines.push("   การลงเอกสาร: "+(st.dr==="ok"?"✅ ครบถ้วน":st.dr==="warn"?"⚠️ ไม่ครบ"+(st.dn?" / "+st.dn:""):"-"));
+  stirLines.push("   คะแนนความสะอาด: "+(st.cs||"-")+"/10"+(st.cn?" — "+st.cn:""));
+
+  // โรงโม่
+  let millLines=[];
+  [1,2,3].forEach(n=>{
+    if((ml.mc||[]).includes(n)){
+      millLines.push("   เครื่อง "+n+": "+(ml.fs&&ml.fs[n]==="ok"?"✅ ละเอียด":"⚠️ ไม่ละเอียด")+(ml.fn&&ml.fn[n]?" — "+ml.fn[n]:""));
+    } else {
+      let s=mist[n]==="broken"?"⚠️ เสีย":"ไม่ได้ใช้";
+      millLines.push("   เครื่อง "+n+": "+s+(mino[n]?" ("+mino[n]+")":""));
+    }
+  });
+  millLines.push("   ตรวจวัตถุดิบเสร็จคันที่: "+((ml.vh||[]).join(", ")||"-"));
+  if((ml.vh||[]).length>0){
+    millLines.push("   สิ่งปนเปื้อนในรถ: "+(ml.ci===0?"✅ ไม่มี":ml.ci?"⚠️ คันที่ "+ml.ci+(ml.cn2?" / "+ml.cn2:""):"-"));
+  }
+  // วัตถุดิบรอส่งโม่
+  let rmLabels={pineapple:"สับปะรดสด หัว/แกน",papaya:"มะละกอ",dry:"ของแห้ง",other:"อื่นๆ"};
+  let anyRM=false;
+  Object.keys(rmLabels).forEach(key=>{
+    let ck=rmCheck[key]||{};
+    if(ck.sel){
+      anyRM=true;
+      let detail=ck.detail?" ("+ck.detail+")":"";
+      let res=ck.contam==="found"?"⚠️ พบสิ่งปนเปื้อน"+(ck.note?" / "+ck.note:""):"✅ ไม่พบสิ่งปนเปื้อน";
+      millLines.push("   รอส่งโม่ — "+rmLabels[key]+detail+": "+res);
+    }
+  });
+  if(!anyRM) millLines.push("   รอส่งโม่: ไม่มีวัตถุดิบรอส่ง");
+  millLines.push("   คลุมผ้าหลังโม่: "+(ml.cv==="ok"?"✅ มิดชิด":"⚠️ ไม่มิดชิด"+(ml.cvn?" / "+ml.cvn:"")));
+  millLines.push("   การลงเอกสาร: "+(ml.dr==="ok"?"✅ ครบถ้วน":ml.dr==="warn"?"⚠️ ไม่ครบ":"-"));
+  millLines.push("   คะแนนความสะอาด: "+(ml.cs||"-")+"/10"+(ml.cn3?" — "+ml.cn3:""));
+
+  // โรงแพ็ค
+  let packLines=[];
+  packLines.push("   เครื่องติดสติกเกอร์: "+(pk.st==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(pk.stn?" / "+pk.stn:"")));
+  packLines.push("   เครื่องซีล: "+(pk.se==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(pk.sen?" / "+pk.sen:"")));
+  packLines.push("   เครื่องรัดกล่อง: "+(pk.sr==="ok"?"✅ ปกติ":"⚠️ ไม่ปกติ"+(pk.srn?" / "+pk.srn:"")));
+  packLines.push("   ปั๊มวันหมดอายุ: "+(pk.ex==="ok"?"✅ ถูกต้อง":"⚠️ ไม่ถูกต้อง")+(pk.exn?" / "+pk.exn:""));
+  packLines.push("   สุ่มชั่งน้ำหนัก: "+(pk.wt==="ok"?"✅ ตามเกณฑ์":pk.wt==="warn"?"⚠️ ไม่ตามเกณฑ์"+(pk.wtn?" / "+pk.wtn:""):"-"));
+  packLines.push("   รอยซีล: "+(pk.sl==="ok"?"✅ ตามเกณฑ์":pk.sl==="warn"?"⚠️ ไม่ตามเกณฑ์"+(pk.sln?" / "+pk.sln:""):"-"));
+  packLines.push("   บรรจุภัณฑ์: "+(pk.pkg==="ok"?"✅ ตามเกณฑ์":pk.pkg==="warn"?"⚠️ ไม่ตามเกณฑ์"+(pk.pkgn?" / "+pk.pkgn:""):"-"));
+  let hasIssue=pk.st==="warn"||pk.se==="warn"||pk.sr==="warn"||pk.ex==="warn";
+  packLines.push("   แจ้งซ่อม: "+(hasIssue?(pk.mt===true?"⚠️ ต้องแจ้ง"+(pk.mn?" — "+pk.mn:""):"✅ ไม่ต้องแจ้ง"):"✅ ระบบปกติ"));
+  packLines.push("   การลงเอกสาร: "+(pk.dr==="ok"?"✅ ครบถ้วน":pk.dr==="warn"?"⚠️ ไม่ครบ":"-"));
+  packLines.push("   คะแนนความสะอาด: "+(pk.cs||"-")+"/10"+(pk.cn?" — "+pk.cn:""));
+  if(pk.ct) packLines.push("   เวลาจบโรงแพ็ค: "+pk.ct+" น.");
+
+  // เอกสารเพิ่มเติม
+  let edLabels={stock_finish:"รับเข้า-จำหน่ายออกสินค้าสำเร็จรูป",stock_raw:"รับเข้า-จำหน่ายวัตถุดิบ/ส่วนผสม/บรรจุภัณฑ์/เคมีภัณฑ์",sys_doc:"เอกสารระบบ"};
+  let edChecked=(ed.checks||[]).map(c=>edLabels[c]||c);
+  let edLines=[];
+  if(edChecked.length>0) edChecked.forEach(c=>edLines.push("   ✅ "+c));
+  else edLines.push("   -");
+  if(ed.docDetail) edLines.push("   รายละเอียด: "+ed.docDetail);
+  if(ed.timestamp) edLines.push("   เวลาบันทึก: "+ed.timestamp);
+
+  // assemble
+  let sep="━━━━━━━━━━━━━━━━━━━━━━━━━━";
+  let t="";
+  t+="📊 รายงาน QC — บริษัท อัญชลี ฟรุ๊ต โปรดักส์ จำกัด\n";
+  t+="📅 วันที่: "+ST.date+" | ⏰ "+r.lb+"\n";
+  t+="👤 ผู้รายงาน: "+ST.rep+" | ⏱️ เสร็จสิ้น: "+rd.dt+" น.\n";
+  t+=sep+"\n";
+
+  t+="🏷️ LOT ผลิต ("+(lotLines.length||0)+" LOT)\n";
+  if(lotLines.length) lotLines.forEach(l=>t+=l+"\n"); else t+="  -\n";
+  t+="\n";
+
+  t+="🔥 บอยเลอร์: ["+(bOk?"ปกติทุกรายการ":"⚠️ มีปัญหา")+"]\n";
+  bLines.forEach(l=>t+=l+"\n");
+  t+="\n";
+
+  t+="🫙 โรงกวน: [คะแนน "+(st.cs||"-")+"/10]\n";
+  stirLines.forEach(l=>t+=l+"\n");
+  t+="\n";
+
+  t+="⚙️ โรงโม่: [คะแนน "+(ml.cs||"-")+"/10]\n";
+  millLines.forEach(l=>t+=l+"\n");
+  t+="\n";
+
+  t+="📦 โรงแพ็ค: [คะแนน "+(pk.cs||"-")+"/10]\n";
+  packLines.forEach(l=>t+=l+"\n");
+  t+="\n";
+
+  t+="📋 งานเอกสารเพิ่มเติม\n";
+  edLines.forEach(l=>t+=l+"\n");
+  t+=sep;
+  return t;
+}
+
+function doCopy(k){
+  let txt=buildFullReport(k);
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(()=>toast("📋 Copy แล้ว! วางใน LINE ได้เลย")).catch(()=>prompt("Copy:",txt)); }
+  else { prompt("Copy:",txt); }
+}
+
+function doCopyAll(){
+  let doneRounds=RM.filter(r=>ST.rounds[r.k].done);
+  if(doneRounds.length===0){ toast("⚠️ ยังไม่มีรอบที่เสร็จ"); return; }
+  let sep="━━━━━━━━━━━━━━━━━━━━━━━━━━";
+  let txt="📊 สรุป QC ครบทุกรอบ — "+ST.date+"\n";
+  txt+="👤 ผู้รายงาน: "+ST.rep+"\n";
+  let allLots=[];
+  RM.forEach(r=>{ ST.rounds[r.k].lots.forEach(l=>{ if(l.num) allLots.push({...l,round:r.lb}); }); });
+  if(allLots.length>0){
+    txt+=sep+"\n🏷️ LOT ชิมทั้งวัน ("+allLots.length+" LOT)\n";
+    allLots.forEach((l,i)=>{ let c=lotSummary(l); txt+="  "+(i+1)+". "+l.num+" ["+l.round+"]"+(c?" ("+c+")":"")+(l.fix&&l.fix!=="-"?" [แก้: "+l.fix+"]":"")+"\n"; });
+  }
+  txt+=sep+"\n";
+  doneRounds.forEach((r,i)=>{
+    txt+=buildFullReport(r.k);
+    if(i<doneRounds.length-1) txt+="\n\n";
+  });
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(()=>toast("📋 Copy ครบทุกรอบแล้ว!")); }
+  else { prompt("Copy:",txt); }
+}
+
+/* ═══════════════════════════════════════════════════
+   HISTORY — ครบทุกหัวข้อ แบบ expandable
+═══════════════════════════════════════════════════ */
+let _histExpanded={};
+
+function renderHistRow(r, idx){
+  let bOk=(r["บอยเลอร์"]||"").includes("ปกติ");
+  let hasWarn=Object.values(r).some(v=>typeof v==="string"&&v.includes("ไม่ปกติ")||typeof v==="string"&&v.includes("ไม่ตามเกณฑ์")||typeof v==="string"&&v.includes("ไม่มิดชิด")||typeof v==="string"&&v.includes("ไม่ครบ")||typeof v==="string"&&v.includes("ไม่ถูกต้อง")||typeof v==="string"&&v.includes("เสีย")||typeof v==="string"&&v.includes("แจ้งซ่อม"));
+  let expanded=_histExpanded[idx];
+  let roundColor={"รอบ1เช้า":"#245233","รอบ2เช้า":"#1565c0","รอบ3เช้า":"#b45309","รอบ1บ่าย":"#6a1b9a","รอบ2บ่าย":"#7b3f00","รอบ3เย็น":"#2e4a5a"};
+  let cl=roundColor[r["รอบ"]]||"var(--g8)";
+
+  function row(label,val,warn){
+    if(!val||val==="-") return "";
+    let isWarn=warn||(typeof val==="string"&&(val.includes("⚠️")||val.includes("ไม่")||val.includes("เสีย")||val.includes("แจ้งซ่อม")));
+    return `<div style="display:flex;gap:6px;padding:5px 0;border-bottom:1px solid var(--gr1);font-size:12px">
+      <div style="width:130px;flex-shrink:0;color:var(--gr5);font-weight:600">${label}</div>
+      <div style="flex:1;color:${isWarn?"var(--r5)":"var(--gr9)"};font-weight:${isWarn?"700":"400"}">${val}</div>
+    </div>`;
+  }
+  function section(title,cl,rows){
+    let content=rows.filter(x=>x).join("");
+    if(!content) return "";
+    return `<div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:${cl};padding:6px 0;border-bottom:2px solid ${cl}20;margin-bottom:4px">${title}</div>
+      ${content}
+    </div>`;
+  }
+
+  let detail="";
+  if(expanded){
+    detail+=section("🏷️ LOT ผลิต","var(--g7)",[
+      row("LOT",r["LOT"])
+    ]);
+    detail+=section("🔥 บอยเลอร์","#c0392b",[
+      row("สรุป",r["บอยเลอร์"])
+    ]);
+    detail+=section("🫙 โรงกวน","var(--g7)",[
+      row("เครื่องกวน",r["กวน-เครื่อง"]),
+      row("แบะแซ/น้ำตาล",r["กวน-แบะแซ"]),
+      row("โทนสี",r["กวน-สี"]),
+      row("รสชาติ",r["กวน-รส"]),
+      row("คะแนนสะอาด",r["กวน-คะแนน"]?r["กวน-คะแนน"]+"/10":""),
+    ]);
+    detail+=section("⚙️ โรงโม่","var(--gr7)",[
+      row("เครื่องและการใช้งาน",r["โม่-เครื่องและการใช้งาน"]),
+      row("ตรวจวัตถุดิบคันที่",r["ตรวจวัตถุดิบเสร็จแล้วคันที่"]),
+      row("สับปะรดสด",r["รอส่งโม่-สับปะรดสด"]),
+      row("มะละกอ",r["รอส่งโม่-มะละกอ"]),
+      row("ของแห้ง",r["รอส่งโม่-ของแห้ง"]),
+      row("อื่นๆ",r["รอส่งโม่-อื่นๆ"]),
+      row("คลุมผ้า",r["โม่-คลุม"]),
+      row("คะแนนสะอาด",r["โม่-คะแนน"]?r["โม่-คะแนน"]+"/10":""),
+    ]);
+    detail+=section("📦 โรงแพ็ค","var(--b6)",[
+      row("เครื่อง (ปกติ)",r["แพ็ค-เครื่อง"]),
+      row("ปั๊มวันหมดอายุ",r["แพ็ค-ปั๊มวันหมดอายุ"]),
+      row("สุ่มชั่งน้ำหนัก",r["แพ็ค-สุ่มชั่งน้ำหนัก"]),
+      row("รอยซีล",r["แพ็ค-รอยซีล"]),
+      row("บรรจุภัณฑ์",r["แพ็ค-บรรจุภัณฑ์"]),
+      row("แจ้งซ่อม",r["แพ็ค-Maint"]),
+      row("คะแนนสะอาด",r["แพ็ค-คะแนน"]?r["แพ็ค-คะแนน"]+"/10":""),
+    ]);
+    detail+=section("📋 เอกสารเพิ่มเติม","var(--a5)",[
+      row("งานเอกสาร",r["เพิ่มเติม"])
+    ]);
+  }
+
+  return `<div class="hist-item" style="padding:0;overflow:hidden">
+    <div style="padding:13px 16px;cursor:pointer" onclick="_histExpanded[${idx}]=!_histExpanded[${idx}];refreshHist()">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:700;color:var(--g8)">📅 ${r["วันที่"]||"-"}</span>
+            <span style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:${cl};color:#fff">${r["รอบ"]||"-"}</span>
+          </div>
+          <div style="font-size:12px;color:var(--gr5)">👤 ${r["ผู้รายงาน"]||"-"} · ⏱️ ${r["เวลาจบ"]||"-"} น.</div>
+          ${r["LOT"]?`<div style="font-size:11px;color:var(--gr7);margin-top:3px;line-height:1.4">🏷️ ${r["LOT"]}</div>`:""}
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+            <span class="hist-badge ${bOk?"ok":"warn"}">${bOk?"✅ บอยเลอร์ปกติ":"⚠️ บอยเลอร์มีปัญหา"}</span>
+            ${hasWarn?`<span class="hist-badge warn">⚠️ มีรายการผิดปกติ</span>`:`<span class="hist-badge ok">✅ ทุกรายการปกติ</span>`}
+          </div>
+        </div>
+        <div style="font-size:18px;color:var(--gr5);flex-shrink:0;margin-top:2px">${expanded?"▲":"▼"}</div>
+      </div>
+    </div>
+    ${expanded?`<div style="padding:0 16px 14px;border-top:1px solid var(--gr1)">${detail}
+      <button style="width:100%;margin-top:8px;padding:9px;border:1.5px solid var(--g4);border-radius:var(--rmd);background:var(--g0);color:var(--g7);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer" onclick="copyHistRow(${idx})">📋 Copy รายงานนี้ → LINE</button>
+    </div>`:""}
+  </div>`;
+}
+
+let _histData=[];
+function refreshHist(){
+  let h=_histData.length===0?'<div style="text-align:center;color:var(--gr5);font-size:13px;padding:16px">ยังไม่มีข้อมูล</div>':_histData.map((r,i)=>renderHistRow(r,i)).join("");
+  document.getElementById("histList").innerHTML=h;
+}
+function copyHistRow(idx){
+  let r=_histData[idx]; if(!r) return;
+  // Build a text report from the stored Supabase columns
+  let sep="━━━━━━━━━━━━━━━━━━━━━━━━━━";
+  let t="📊 รายงาน QC — บริษัท อัญชลี ฟรุ๊ต โปรดักส์ จำกัด\n";
+  t+="📅 วันที่: "+(r["วันที่"]||"-")+" | ⏰ รอบ: "+(r["รอบ"]||"-")+"\n";
+  t+="👤 ผู้รายงาน: "+(r["ผู้รายงาน"]||"-")+" | ⏱️ เสร็จสิ้น: "+(r["เวลาจบ"]||"-")+" น.\n";
+  t+=sep+"\n";
+  if(r["LOT"]) t+="🏷️ LOT: "+r["LOT"]+"\n\n";
+  t+="🔥 บอยเลอร์: "+(r["บอยเลอร์"]||"-")+"\n\n";
+  t+="🫙 โรงกวน:\n";
+  t+="   เครื่อง: "+(r["กวน-เครื่อง"]||"-")+" | แบะแซ: "+(r["กวน-แบะแซ"]||"-")+"\n";
+  t+="   สี: "+(r["กวน-สี"]||"-")+" | รส: "+(r["กวน-รส"]||"-")+"\n";
+  t+="   คะแนน: "+(r["กวน-คะแนน"]||"-")+"/10\n\n";
+  t+="⚙️ โรงโม่:\n";
+  t+="   "+(r["โม่-เครื่องและการใช้งาน"]||"-")+"\n";
+  t+="   ตรวจวัตถุดิบคันที่: "+(r["ตรวจวัตถุดิบเสร็จแล้วคันที่"]||"-")+"\n";
+  if(r["รอส่งโม่-สับปะรดสด"]&&r["รอส่งโม่-สับปะรดสด"]!=="-") t+="   สับปะรดสด: "+r["รอส่งโม่-สับปะรดสด"]+"\n";
+  if(r["รอส่งโม่-มะละกอ"]&&r["รอส่งโม่-มะละกอ"]!=="-") t+="   มะละกอ: "+r["รอส่งโม่-มะละกอ"]+"\n";
+  if(r["รอส่งโม่-ของแห้ง"]&&r["รอส่งโม่-ของแห้ง"]!=="-") t+="   ของแห้ง: "+r["รอส่งโม่-ของแห้ง"]+"\n";
+  if(r["รอส่งโม่-อื่นๆ"]&&r["รอส่งโม่-อื่นๆ"]!=="-") t+="   อื่นๆ: "+r["รอส่งโม่-อื่นๆ"]+"\n";
+  t+="   คลุมผ้า: "+(r["โม่-คลุม"]||"-")+" | คะแนน: "+(r["โม่-คะแนน"]||"-")+"/10\n\n";
+  t+="📦 โรงแพ็ค:\n";
+  t+="   เครื่อง: "+(r["แพ็ค-เครื่อง"]||"-")+"\n";
+  t+="   ปั๊มวันหมดอายุ: "+(r["แพ็ค-ปั๊มวันหมดอายุ"]||"-")+"\n";
+  t+="   ชั่งน้ำหนัก: "+(r["แพ็ค-สุ่มชั่งน้ำหนัก"]||"-")+" | รอยซีล: "+(r["แพ็ค-รอยซีล"]||"-")+" | บรรจุภัณฑ์: "+(r["แพ็ค-บรรจุภัณฑ์"]||"-")+"\n";
+  t+="   แจ้งซ่อม: "+(r["แพ็ค-Maint"]||"-")+" | คะแนน: "+(r["แพ็ค-คะแนน"]||"-")+"/10\n\n";
+  if(r["เพิ่มเติม"]&&r["เพิ่มเติม"]!=="-") t+="📋 เอกสาร: "+r["เพิ่มเติม"]+"\n";
+  t+=sep;
+  if(navigator.clipboard){ navigator.clipboard.writeText(t).then(()=>toast("📋 Copy แล้ว!")); }
+  else { prompt("Copy:",t); }
+}
+
+async function loadHist(){
+  document.getElementById("histList").innerHTML='<div style="text-align:center;color:var(--gr5);padding:16px">⏳ กำลังโหลด...</div>';
+  if(!_isOnline){
+    document.getElementById("histList").innerHTML='<div style="text-align:center;color:var(--r5);padding:16px">📵 ออฟไลน์ — ไม่สามารถโหลดประวัติได้</div>';
+    return;
+  }
+  try {
+    let res = await fetch(SUPABASE_URL+TABLE+"?select=*&order=%E0%B8%A7%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%9A%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%B6%E0%B8%81.desc&limit=50", {
+      headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}
+    });
+    let data = await res.json();
+    if(!Array.isArray(data)||data.length===0){
+      document.getElementById("histList").innerHTML='<div style="text-align:center;color:var(--gr5);font-size:13px;padding:16px">ยังไม่มีข้อมูลประวัติ</div>';
+      return;
+    }
+    _histData=data;
+    _histExpanded={};
+    refreshHist();
+  } catch(e){
+    document.getElementById("histList").innerHTML=`<div style="color:var(--r5);padding:12px">เกิดข้อผิดพลาด: ${e.message}</div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════ */
+let _toastTimer=null;
+function toast(msg){
+  let t=document.getElementById("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove("show"),2800);
+}
+</script>
+</body>
+</html>

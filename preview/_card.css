@@ -1,0 +1,45 @@
+/* Shared preview card chrome — used by all preview/*.html files */
+@import url('../colors_and_type.css');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: var(--font);
+  background: var(--gr0);
+  color: var(--gr9);
+  font-size: var(--t-body-size);
+  -webkit-font-smoothing: antialiased;
+}
+
+.card-frame {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.row.tight { gap: 6px; }
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--gr5);
+}
+
+.mono { font-family: var(--mono); }

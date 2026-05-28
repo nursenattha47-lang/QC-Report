@@ -1,0 +1,21 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+  .tile { border-radius:10px; padding:14px 8px; display:flex; flex-direction:column; align-items:center; gap:6px; color:#fff; }
+  .ic { font-size:26px; line-height:1; }
+  .lbl { font-size:13px; font-weight:700; line-height:1.2; text-align:center; }
+  .hex { font-family:var(--mono); font-size:11px; opacity:.85; }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">Round accents — 1 color + time-of-day emoji per inspection round</div>
+  <div class="grid">
+    <div class="tile" style="background:#245233"><span class="ic">🌅</span><span class="lbl">รอบ1 เช้า</span><span class="hex">#245233</span></div>
+    <div class="tile" style="background:#1565c0"><span class="ic">🌤️</span><span class="lbl">รอบ2 เช้า</span><span class="hex">#1565c0</span></div>
+    <div class="tile" style="background:#b45309"><span class="ic">☀️</span><span class="lbl">รอบ3 เช้า</span><span class="hex">#b45309</span></div>
+    <div class="tile" style="background:#6a1b9a"><span class="ic">🌞</span><span class="lbl">รอบ1 บ่าย</span><span class="hex">#6a1b9a</span></div>
+    <div class="tile" style="background:#7b3f00"><span class="ic">🌇</span><span class="lbl">รอบ2 บ่าย</span><span class="hex">#7b3f00</span></div>
+    <div class="tile" style="background:#2e4a5a"><span class="ic">🌆</span><span class="lbl">รอบ3 เย็น</span><span class="hex">#2e4a5a</span></div>
+  </div>
+</div>
+</body></html>

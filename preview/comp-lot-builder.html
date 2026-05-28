@@ -1,0 +1,54 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .banner { background:#1565c0; color:#fff; border-radius:14px; padding:16px 18px; display:flex; justify-content:space-between; align-items:center; }
+  .sub { font-size:12px; opacity:.8; margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px; }
+  .name { font-size:22px; font-weight:700; display:flex; align-items:center; gap:10px; }
+  .code-pill { font-family:var(--mono); font-size:13px; font-weight:800; background:rgba(255,255,255,.22); padding:3px 9px; border-radius:6px; letter-spacing:.5px; }
+  .badge { font-family:var(--mono); font-size:13px; font-weight:500; background:rgba(255,255,255,.2); border-radius:100px; padding:5px 12px; }
+  .builder { background:#f2faf5; border:1.5px solid #b5e8c5; border-radius:10px; padding:14px; }
+  .b-title { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:#2e6b42; margin-bottom:10px; }
+  .result { display:flex; align-items:center; gap:10px; background:#fff; border:1.5px solid #7ecf97; border-radius:10px; padding:10px 14px; }
+  .code { font-family:var(--mono); font-size:17px; font-weight:700; color:#1a3a2a; flex:1; letter-spacing:1px; }
+  .apply { font-size:14px; font-weight:700; padding:9px 16px; border-radius:100px; background:#2e6b42; color:#fff; border:none; min-height:42px; }
+  .cap { font-size:11px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.4px; margin-bottom:3px; }
+  .name-line { font-size:13px; color:#2e6b42; margin-top:3px; }
+
+  .or-row { display:flex; align-items:center; gap:10px; margin:12px 0 10px; color:#6b7280; font-size:13px; font-weight:700; }
+  .or-row::before, .or-row::after { content:''; flex:1; height:1px; background:#d1d5db; }
+
+  .manual { background:#fff; border:1.5px dashed #b45309; border-radius:10px; padding:12px 14px; }
+  .manual-title { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:#b45309; margin-bottom:7px; }
+  .manual-input { width:100%; padding:10px 12px; border:1.5px solid #d1d5db; border-radius:10px; font-family:var(--mono); font-size:16px; color:#111827; background:#fff; outline:none; letter-spacing:1px; }
+  .manual-hint { font-size:12px; color:#b45309; margin-top:7px; }
+</style></head><body>
+<div class="card-frame">
+  <div class="banner">
+    <div>
+      <div class="sub">กำลังบันทึก</div>
+      <div class="name"><span style="font-size:24px">🌤️</span>รอบ2 เช้า</div>
+    </div>
+    <div class="badge">09:42 น.</div>
+  </div>
+
+  <div class="builder">
+    <div class="b-title">สร้างเลข LOT อัตโนมัติ</div>
+    <div class="result">
+      <div>
+        <div class="cap">ตัวอย่างเลข LOT</div>
+        <div class="code">B1-25-5-26-1</div>
+        <div class="name-line">🍍 สับปะรด</div>
+      </div>
+      <button class="apply">ใช้เลขนี้</button>
+    </div>
+  </div>
+
+  <div class="or-row">หรือ</div>
+
+  <div class="manual">
+    <div class="manual-title">พิมพ์เลข LOT เอง — กรณีสุ่มชิม</div>
+    <input class="manual-input" value="B7-12-5-26-3" />
+    <div class="manual-hint">ใช้ช่องนี้เมื่อเลือกชิมแบบสุ่ม ไม่ใช่ LOT ที่ผลิตเอง</div>
+  </div>
+</div>
+</body></html>

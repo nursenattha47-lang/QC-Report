@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .scale { display:grid; grid-template-columns:repeat(10,1fr); gap:6px; }
+  .sw { aspect-ratio:1; border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; padding:6px; font-family:var(--mono); font-size:9px; font-weight:600; }
+  .sw .name { font-weight:700; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--gr5); }
+</style></head><body>
+<div class="card-frame">
+  <div class="label">Green scale — brand primary</div>
+  <div class="scale">
+    <div class="sw" style="background:#f2faf5;color:#0d2b1a"><span class="name">g0</span><span>#f2faf5</span></div>
+    <div class="sw" style="background:#e1f5e9;color:#0d2b1a"><span class="name">g1</span><span>#e1f5e9</span></div>
+    <div class="sw" style="background:#b5e8c5;color:#0d2b1a"><span class="name">g2</span><span>#b5e8c5</span></div>
+    <div class="sw" style="background:#7ecf97;color:#0d2b1a"><span class="name">g3</span><span>#7ecf97</span></div>
+    <div class="sw" style="background:#52aa70;color:#fff"><span class="name">g4</span><span>#52aa70</span></div>
+    <div class="sw" style="background:#3d8c58;color:#fff"><span class="name">g5</span><span>#3d8c58</span></div>
+    <div class="sw" style="background:#2e6b42;color:#fff"><span class="name">g6</span><span>#2e6b42</span></div>
+    <div class="sw" style="background:#245233;color:#fff"><span class="name">g7</span><span>#245233</span></div>
+    <div class="sw" style="background:#1a3a2a;color:#fff"><span class="name">g8</span><span>#1a3a2a</span></div>
+    <div class="sw" style="background:#0d2b1a;color:#fff"><span class="name">g9</span><span>#0d2b1a</span></div>
+  </div>
+  <div class="legend">
+    <span><b>g6</b> primary btn</span>
+    <span><b>g7</b> OK chip · active tab</span>
+    <span><b>g8</b> topbar · titles</span>
+    <span><b>g1</b> OK alerts</span>
+  </div>
+</div>
+</body></html>
